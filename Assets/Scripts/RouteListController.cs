@@ -12,9 +12,14 @@ public class RouteListController : MonoBehaviour
     {
         for(int n = 0; n < 3; n ++) {
             GameObject newRoute = Instantiate(RouteListEntryPrefab);
-            newRoute.GetComponent<RouteListEntry>().Initialize(RouteListEntry.FlowerRarity.COMMON, 10, 10, 3);
             newRoute.transform.parent = gameObject.transform;
             newRoute.transform.localScale = Vector3.one;
+
+            newRoute.GetComponent<RouteListEntry>().Initialize(
+                new Route("Rose", Route.FlowerRarity.COMMON, 10, 10, 3)
+            );
+
+
         }
     }
 
