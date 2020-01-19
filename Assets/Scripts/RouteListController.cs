@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RouteListController : MonoBehaviour
 {
@@ -8,32 +9,30 @@ public class RouteListController : MonoBehaviour
 
     [SerializeField] GameObject RouteListEntryPrefab;
 
+    [SerializeField] int maxRange = 5;
+    [SerializeField] Button AddRouteButton;
+
+    public int MaxRoutes { get; private set; } = 3;
+
     private void Awake()
     {
-        for(int n = 0; n < 3; n ++) {
-            GameObject newRoute = Instantiate(RouteListEntryPrefab);
-            newRoute.transform.parent = gameObject.transform;
-            newRoute.transform.localScale = Vector3.one;
-
-            newRoute.GetComponent<RouteListEntry>().Initialize(
-                new Route("Rose", Route.FlowerRarity.COMMON, 10, 10, 3)
-            );
-
-
-        }
+        AddRouteButton.onClick.RemoveListener(AddRoute);
+        AddRouteButton.onClick.AddListener(AddRoute);
     }
 
-    //RouteListEntry GenerateRandomRouteListEntry(int distance) {
-    //    int closeness;
-    //    if(distance < MAX_DISTANCE * .25) {
-    //        closeness = 0;
-    //    } else if (distance < MAX_DISTANCE * .5) {
-    //        closeness = 1;
-    //    } else if (distance < MAX_DISTANCE * .75) {
-    //        closeness = 2;
-    //    } else {
-    //        closeness = 3;
-    //    }
-    //}
+    void AddRoute() {
+        if (RouteListEntry.TotalRoutes >= MaxRoutes)
+            return;
+        GameObject newRouteGO = Instantiate(RouteListEntryPrefab);
+        newRouteGO.transform.parent = gameObject.transform;
+        newRouteGO.transform.localScale = Vector3.one;
+        newRouteGO.GetComponent<RouteListEntry>().Initialize(
+            GenerateRandomRoute()
+        );
+    }
+
+    Route GenerateRandomRoute() {
+        return new Route("Rose", 1, 10, 10, 3);
+    }
 
 }

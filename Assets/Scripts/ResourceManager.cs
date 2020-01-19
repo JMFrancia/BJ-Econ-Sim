@@ -1,12 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager instance;
 
+    //Using properties w/ static private vars exclusively
+    //so can use private vars as refs (see: add & remove resource methods)
     public static int Pollen {
         get {
             return _pollen;
