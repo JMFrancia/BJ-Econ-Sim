@@ -5,16 +5,57 @@ using UnityEngine.UI;
 
 public class StepController : MonoBehaviour
 {
-    public static int step {
-        get;
-        private set;
+    [SerializeField] Text stepText;
+    [SerializeField] Text timeText;
+    [SerializeField] Button stepButton;
+    [SerializeField] Toggle autoToggle;
+    [SerializeField] InputField speedInput;
+
+    public static int StepNumber { get; private set; } = 0;
+    public static bool Auto { get; private set; } = false;
+    public static float AutoSpeed { get; private set; } = 5f;
+
+    TimeSpan timeElapsed = new TimeSpan();
+
+    TimeSpan timePerStep = new TimeSpan(300);
+
+    private void Awake()
+    {
+        stepButton.onClick.RemoveListener(Step);
+        stepButton.onClick.AddListener(Step);
+
+        autoToggle.onValueChanged.RemoveListener(OnAutoToggle);
+        autoToggle.onValueChanged.AddListener(OnAutoToggle);
+
+        speedInput.onValueChanged.AddListener(OnSpeedChange);
+
+        UpdateDisplay();
     }
 
-    [SerializeField] Text stepText;
+    void Step() {
+        StepNumber++;
+        timeElapsed.Increment(timePerStep);
+        UpdateDisplay();
+        EventManager.TriggerEvent(EventNames.STEP, StepNumber);
+    }
 
-    public void Step() {
-        step++;
-        stepText.text = step.ToString();
-        EventManager.TriggerEvent(EventNames.STEP, step);
+    void UpdateDisplay()
+    {
+        timeText.text = timeElapsed.ToString();
+        stepText.text = StepNumber.ToString();
+    }
+
+    void OnAutoToggle(bool val) {
+        stepButton.interactable = !val;
+        speedInput.gameObject.SetActive(val);
+    }
+
+    void OnSpeedChange(string val) {
+        try
+        {
+            AutoSpeed = float.Parse(val);
+        } catch (System.FormatException e) { 
+
+        }
     }
 }
