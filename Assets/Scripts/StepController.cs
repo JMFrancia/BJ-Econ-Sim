@@ -16,7 +16,6 @@ public class StepController : MonoBehaviour
     public static float AutoSpeed { get; private set; } = 5f;
 
     TimeSpan timeElapsed = new TimeSpan();
-
     TimeSpan timePerStep = new TimeSpan(300);
 
     private void Awake()

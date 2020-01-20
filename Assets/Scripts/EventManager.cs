@@ -8,9 +8,10 @@ public class EventManager {
 	class UnityEventBool : UnityEvent<bool> {}
 	class UnityEventInt : UnityEvent<int> {}
 	class UnityEventVector3 : UnityEvent<Vector3> {}
-	class UnityEventCamera : UnityEvent<Camera> {}
+	class UnityEventCamera : UnityEvent<Camera> { }
+    class UnityEventRoute : UnityEvent<Route> { }
 
-	public static EventManager Instance = new EventManager ();
+    public static EventManager Instance = new EventManager ();
 
 	private Dictionary <string, UnityEvent> eventDictionary = new Dictionary<string, UnityEvent>();
 	private Dictionary <string, UnityEventFloat> eventDictionaryFloat = new Dictionary<string, UnityEventFloat> ();
@@ -18,9 +19,10 @@ public class EventManager {
 	private Dictionary <string, UnityEventInt> eventDictionaryInt = new Dictionary<string, UnityEventInt>();
 	private Dictionary <string, UnityEventVector3> eventDictionaryVector3 = new Dictionary<string, UnityEventVector3> ();
 	private Dictionary <string, UnityEventCamera> eventDictionaryCamera = new Dictionary<string, UnityEventCamera> ();
+    private Dictionary <string, UnityEventRoute> eventDictionaryRoute = new Dictionary<string, UnityEventRoute>();
 
-	#region StartListening
-	public static void StartListening (string eventName, UnityAction listener)
+    #region StartListening
+    public static void StartListening (string eventName, UnityAction listener)
 	{
 		UnityEvent thisEvent = null;
 		if (Instance.eventDictionary.TryGetValue (eventName, out thisEvent))
@@ -111,10 +113,25 @@ public class EventManager {
 		}
 	}
 
-	#endregion
+    public static void StartListeningClass(string eventName, UnityAction<Route> listener)
+    {
+        UnityEventRoute thisEvent = null;
+        if (Instance.eventDictionaryRoute.TryGetValue(eventName, out thisEvent))
+        {
+            thisEvent.AddListener(listener);
+        }
+        else
+        {
+            thisEvent = new UnityEventRoute();
+            thisEvent.AddListener(listener);
+            Instance.eventDictionaryRoute.Add(eventName, thisEvent);
+        }
+    }
 
-	#region StopListening
-	public static void StopListening (string eventName, UnityAction listener)
+    #endregion
+
+    #region StopListening
+    public static void StopListening (string eventName, UnityAction listener)
 	{
 		if (Instance == null) 
 		{
@@ -192,10 +209,23 @@ public class EventManager {
 		}
 	}
 
-	#endregion
+    public static void StopListeningClass(string eventName, UnityAction<Route> listener)
+    {
+        if (Instance == null)
+        {
+            return;
+        }
+        UnityEventRoute thisEvent = null;
+        if (Instance.eventDictionaryRoute.TryGetValue(eventName, out thisEvent))
+        {
+            thisEvent.RemoveListener(listener);
+        }
+    }
 
-	#region TriggerEvent
-	public static void TriggerEvent (string eventName)
+    #endregion
+
+    #region TriggerEvent
+    public static void TriggerEvent (string eventName)
 	{
 		UnityEvent thisEvent = null;
 		if (Instance != null && Instance.eventDictionary.TryGetValue (eventName, out thisEvent))
@@ -250,5 +280,14 @@ public class EventManager {
 		}
 	}
 
-	#endregion
+    public static void TriggerEvent(string eventName, Route param)
+    {
+        UnityEventRoute thisEvent = null;
+        if (Instance != null && Instance.eventDictionaryRoute.TryGetValue(eventName, out thisEvent))
+        {
+            thisEvent.Invoke(param);
+        }
+    }
+
+    #endregion
 }

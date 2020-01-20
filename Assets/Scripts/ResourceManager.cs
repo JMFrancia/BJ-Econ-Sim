@@ -42,6 +42,16 @@ public class ResourceManager : MonoBehaviour
         nectarText.text = _nectar.ToString();
     }
 
+    private void OnEnable()
+    {
+        EventManager.StartListeningClass(EventNames.FORAGER_RETURNING_TO_HIVE, OnForagerReturn);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListeningClass(EventNames.FORAGER_RETURNING_TO_HIVE, OnForagerReturn);
+    }
+
     public void Initialize(int pollen, int nectar, int workers)
     {
         _pollen = pollen;
@@ -90,5 +100,17 @@ public class ResourceManager : MonoBehaviour
         res += amt;
         resText.text = res.ToString();
         return res;
+    }
+
+    void OnForagerReturn(Route route) {
+        AddPollen(ControlManager.Quantities.GatherRate);
+        AddNectar(ControlManager.Quantities.GatherRate);
+
+        if(route != null) {
+            ScheduleManager.instance.AddScheduleItem<int>(ControlManager.Times.TravelTime * route.Distance, EventNames.FORAGER_ARRIVING_AT_RESOURCE, route.GetInstanceID(), $"Forager arrived at route {route.Name}");
+        }
+        else {
+            AddWorker();
+        }
     }
 }
