@@ -35,7 +35,7 @@ public class RouteListEntry : MonoBehaviour
     }
 
     void OnPlusButtonPressed() {
-        Route.AddForager();
+        ForagerManager.instance.AddForager(Route);
     }
 
     void OnMinusButtonPressed() {
@@ -45,6 +45,10 @@ public class RouteListEntry : MonoBehaviour
     }
 
     void OnRouteChange() {
+        if(Route.Resources <= 0) {
+            DestroyRouteListEntry();
+        }
+
         resourcesText.text = Route.Resources.ToString();
         foragersText.text = $"{Route.WorkersAssigned} / {Route.WorkerCapacity}";
     }

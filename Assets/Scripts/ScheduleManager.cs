@@ -30,6 +30,20 @@ public class ScheduleManager : MonoBehaviour
         EventManager.StopListening(EventNames.STEP, OnStep);
     }
 
+    public void AddScheduleItem(int steps, Action callback, string startingMessage = null, string completionMessage = null) { 
+        if(steps < 0) {
+            return;
+        }
+        if (steps == 0) {
+            callback.Invoke();
+        }
+        int scheduledStep = steps + StepController.StepNumber;
+        schedule.Enqueue(new ScheduleItem(callback, scheduledStep, completionMessage), scheduledStep);
+        if(startingMessage != null) {
+            Debug.Log(startingMessage);
+        }
+    }
+
     public void AddScheduleItem<T>(int steps, string eventName, T param, string completionMessage = null) {
         if (steps < 0)
         {
@@ -82,6 +96,20 @@ public class ScheduleManager : MonoBehaviour
         }
 
         public abstract void Activate();
+    }
+
+    class ScheduleItem : BaseScheduleItem { 
+        public Action CallBack { get; private set; }
+
+        public ScheduleItem(Action callBack, int scheduledStep, string completionMessage = null) : base("", scheduledStep, completionMessage) {
+            CallBack = callBack;
+        }
+
+        public override void Activate()
+        {
+            Debug.Log(CompletionMessage);
+            CallBack.Invoke();
+        }
     }
 
     class ScheduleItem<T>: BaseScheduleItem { 

@@ -32,7 +32,8 @@ public class RouteListController : MonoBehaviour
     }
 
     Route GenerateRandomRoute() {
-        return new Route("Rose", 1, 10, 10, 3);
+        Route result = new Route("Rose", 1, 10, 10, 3);
+        return result;
     }
 
 }
