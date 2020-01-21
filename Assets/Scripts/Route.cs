@@ -11,6 +11,7 @@ public class Route
     public int Resources { get; private set; }
     public int WorkersAssigned { get; private set; }
     public int WorkerCapacity { get; private set; }
+    public bool Depleted { get; private set; }
 
     public Action OnChange;
 
@@ -20,6 +21,7 @@ public class Route
         Distance = distance;
         Resources = resources;
         WorkerCapacity = workerCapcity;
+        Depleted = false;
 
         //travelTime = ControlManager.Times.TravelTime * Distance;
     }
@@ -57,9 +59,20 @@ public class Route
         return false;
     }
 
+    public void RemoveAllForagers() { 
+        while(WorkersAssigned > 0)
+        {
+            ForagerManager.instance.ReturnForager();
+            WorkersAssigned--;
+        }
+    }
+
     public int GetResources(int amt) {
         int result = Mathf.Clamp(amt, 0, Resources);
         Resources -= result;
+        if(Resources <= 0) {
+            Depleted = true;
+        }
         OnChange();
         return result;
     }

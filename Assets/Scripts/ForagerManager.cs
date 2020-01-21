@@ -36,15 +36,16 @@ public class ForagerManager : MonoBehaviour
         string arrivingMessage = $"Forager arrived at route {route.Name}";
         Action callback = () => BeginForaging(route);
 
-        //Scope of anonymous function not capturing route; route is null here
-
         //Schedule begin foraging upon arrival
         ScheduleManager.instance.AddScheduleItem(travelTime, callback, departingMessage, arrivingMessage);
     }
 
     void BeginForaging(Route route) {
-        if (route == null)
+        if (route.Depleted)
+        {
+            Debug.Log($"Route {route.Name} depleted");
             return;
+        }
 
         string startingMessage = $"Forager beginning foraging on route {route.Name}";
         string endingMessage = $"Forager ended foraging on route {route.Name}";
@@ -55,9 +56,11 @@ public class ForagerManager : MonoBehaviour
     }
 
     void EndForaging(Route route) {
-        if (route == null)
+        if (route.Depleted)
+        {
+            Debug.Log($"Route {route.Name} depleted");
             return;
-
+        }
         //Schedule return to hive
         int res = route.GetResources(ControlManager.Quantities.GatherRate);
         string departingMessage = $"Forager leaving from route {route.Name} to return to hive with {res} resources";
@@ -73,7 +76,7 @@ public class ForagerManager : MonoBehaviour
         ResourceManager.instance.AddPollen(res);
 
         //if route still open, repeat
-        if(route != null) {
+        if(!route.Depleted) {
             SendForagerToRoute(route);
         }
     }

@@ -45,8 +45,9 @@ public class RouteListEntry : MonoBehaviour
     }
 
     void OnRouteChange() {
-        if(Route.Resources <= 0) {
+        if(Route.Depleted) {
             DestroyRouteListEntry();
+            return;
         }
 
         resourcesText.text = Route.Resources.ToString();
@@ -54,9 +55,8 @@ public class RouteListEntry : MonoBehaviour
     }
 
     void DestroyRouteListEntry() {
-        for (int n = 0; n < Route.WorkersAssigned; n++) {
-            Route.RemoveForager();
-        }
+        Route.RemoveAllForagers();
+        Route = null;
         TotalRoutes--;
         Destroy(gameObject);
     }

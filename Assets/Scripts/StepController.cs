@@ -18,6 +18,8 @@ public class StepController : MonoBehaviour
     TimeSpan timeElapsed = new TimeSpan();
     TimeSpan timePerStep = new TimeSpan(300);
 
+    Coroutine autoStepRoutine;
+
     private void Awake()
     {
         stepButton.onClick.RemoveListener(Step);
@@ -47,14 +49,30 @@ public class StepController : MonoBehaviour
     void OnAutoToggle(bool val) {
         stepButton.interactable = !val;
         speedInput.gameObject.SetActive(val);
+        Auto = val;
+        if(val) {
+            autoStepRoutine = StartCoroutine(AutoStep()); 
+        } else {
+            StopCoroutine(autoStepRoutine);
+        }
+    }
+
+    IEnumerator AutoStep() {
+        Debug.Log("Beginning auto step with speed " + AutoSpeed);
+        while(Auto) {
+            Step();
+            yield return new WaitForSeconds(AutoSpeed);
+        }
     }
 
     void OnSpeedChange(string val) {
+        float oldVal = AutoSpeed;
         try
         {
             AutoSpeed = float.Parse(val);
-        } catch (System.FormatException e) { 
-
+        } catch (System.FormatException e) {
+            AutoSpeed = oldVal;
         }
+        Debug.Log("Changing auto step speed to " + AutoSpeed);
     }
 }
