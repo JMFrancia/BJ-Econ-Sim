@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
+//Refactor to contain list of actual foragers, along with their states and inventory
 public class ForagerManager : MonoBehaviour
 {
     public static ForagerManager instance;
@@ -13,7 +14,6 @@ public class ForagerManager : MonoBehaviour
             Destroy(this);
         }
     }
-
 
     public bool AddForager(Route route) { 
         if(route.HasCapacity() && ResourceManager.instance.RemoveWorker())

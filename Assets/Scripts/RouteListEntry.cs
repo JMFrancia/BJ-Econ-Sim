@@ -39,13 +39,13 @@ public class RouteListEntry : MonoBehaviour
     }
 
     void OnMinusButtonPressed() {
-        if(!Route.RemoveForager()) {
+        if (!Route.RemoveForager()) {
             DestroyRouteListEntry();
         }
     }
 
     void OnRouteChange() {
-        if(Route.Depleted) {
+        if (Route == null || Route.Depleted) {
             DestroyRouteListEntry();
             return;
         }

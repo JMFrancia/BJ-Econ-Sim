@@ -44,6 +44,7 @@ public class ScheduleManager : MonoBehaviour
         }
     }
 
+    //Not really used, keeping in case of future use
     public void AddScheduleItem<T>(int steps, string eventName, T param, string completionMessage = null) {
         if (steps < 0)
         {
@@ -59,28 +60,9 @@ public class ScheduleManager : MonoBehaviour
         Debug.Log("Scheduled " + eventName + " with " + param + " for step " + scheduledStep);
     }
 
-    /*
-    private void Start()
-    {
-        schedule.Enqueue(new ScheduleItem<bool>("test", true, 1), 1);
-        BaseScheduleItem test = schedule.Dequeue();
-
-        Debug.Log("Event name: " + test.EventName);
-        Debug.Log("Scheduled step: " + test.ScheduledStep);
-        if(test is ScheduleItem<bool> boolScheduleItem) {
-            Debug.Log("Data: " + boolScheduleItem.Data);
-        }
-        //Debug.Log("Data: " + test.Data);  //Doesn't work
-        test.Activate();
-    }
-    */
-
     void OnStep(int stepNumber) {
-       // Debug.Log($"Step {stepNumber}: schedule count {schedule.Count}");
         while (schedule.Count > 0 && stepNumber >= schedule.First.ScheduledStep) {
-            //Debug.Log("Why is " + schedule.First.ScheduledStep + " more than " + stepNumber + "?");
-            //Debug.Log("Dequeuing schedule item " + schedule.First.EventName + " with scheduled step " + schedule.First.ScheduledStep);
-            Debug.Log("Step " + stepNumber);
+             Debug.Log("Step " + stepNumber);
             schedule.Dequeue().Activate();
         }
     }
@@ -113,6 +95,7 @@ public class ScheduleManager : MonoBehaviour
         }
     }
 
+    //Not really used, keeping in case of future use
     class ScheduleItem<T>: BaseScheduleItem { 
         public T Data { get; private set; }
 

@@ -51,7 +51,6 @@ public class Route
         if (WorkersAssigned > 0)
         {
             WorkersAssigned--;
-            //ResourceManager.instance.AddWorker();
             ForagerManager.instance.ReturnForager();
             OnChange();
             return true;
@@ -65,6 +64,7 @@ public class Route
             ForagerManager.instance.ReturnForager();
             WorkersAssigned--;
         }
+        Depleted = true;
     }
 
     public int GetResources(int amt) {
