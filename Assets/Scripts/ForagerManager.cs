@@ -6,6 +6,24 @@ public class ForagerManager : MonoBehaviour
 {
     public static ForagerManager instance;
 
+    enum ForagerState { 
+        TravelingToFlower,
+        Foraging,
+        TravelingToHive    
+    }
+
+    struct Forager {
+        public ForagerState state;
+        public int resources;
+        Route Route { get; private set; }
+
+        public Forager(Route r) {
+            Route = r;
+            resources = 0;
+            state = ForagerState.TravelingToFlower;
+        }
+    }
+
     private void Awake()
     {
         if (instance == null) {
@@ -18,17 +36,30 @@ public class ForagerManager : MonoBehaviour
     public bool AddForager(Route route) { 
         if(route.HasCapacity() && ResourceManager.instance.RemoveWorker())
         {
+            //Forager forager = new Forager(route);
+            route.AddForager();
+            OnForagerTaskCompleted(new Forager(route));
+            //InitializeForager(new Forager(route));
+
+            /*
             route.AddForager();
             SendForagerToRoute(route);
+            */
             return true;
         }
         return false;
     }
 
+    //Refactor to use foragers
     public void ReturnForager() {
         ResourceManager.instance.AddWorker();
     }
 
+    void OnForagerTaskCompleted(Forager forager) { 
+        //Check state and initialize next steps
+    }
+
+    /*
     void SendForagerToRoute(Route route)
     {
         int travelTime = CalcRouteTravelTime(route);
@@ -39,7 +70,8 @@ public class ForagerManager : MonoBehaviour
         //Schedule begin foraging upon arrival
         ScheduleManager.instance.AddScheduleItem(travelTime, callback, departingMessage, arrivingMessage);
     }
-
+    */
+    //Refactor into OnForagerTaskCompleted()
     void BeginForaging(Route route) {
         if (route.Depleted)
         {
@@ -55,6 +87,7 @@ public class ForagerManager : MonoBehaviour
         ScheduleManager.instance.AddScheduleItem(ControlManager.Times.ForageTime, callback, startingMessage, endingMessage);
     }
 
+    //Refactor into OnForagerTaskCompleted()
     void EndForaging(Route route) {
         if (route.Depleted)
         {
@@ -71,6 +104,7 @@ public class ForagerManager : MonoBehaviour
         ScheduleManager.instance.AddScheduleItem(CalcRouteTravelTime(route), callback, departingMessage, arrivingMessage);
     }
 
+    //Refactor into OnForagerTaskCompleted()
     void ReturnToHive(Route route, int res) {
         ResourceManager.instance.AddNectar(res);
         ResourceManager.instance.AddPollen(res);
