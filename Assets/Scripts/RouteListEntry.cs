@@ -45,13 +45,23 @@ public class RouteListEntry : MonoBehaviour
     }
 
     void OnRouteChange() {
-        if (Route == null || Route.Depleted) {
+        if(Route.Closed) {
             DestroyRouteListEntry();
             return;
         }
 
+        if (Route.Depleted)
+        {
+            LockRouteListEntry();
+        }
+
         resourcesText.text = Route.Resources.ToString();
         foragersText.text = $"{Route.WorkersAssigned} / {Route.WorkerCapacity}";
+    }
+
+    void LockRouteListEntry() { 
+    //Lock here
+    
     }
 
     void DestroyRouteListEntry() {
