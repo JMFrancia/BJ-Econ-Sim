@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Sirenix.OdinInspector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-//Refactor to contain list of actual foragers, along with their states and inventory
-public class ForagerManager : MonoBehaviour
+public class ForagerManager : SerializedMonoBehaviour
 {
     enum ForagerState { 
         TravelingToFlower,
@@ -12,6 +12,7 @@ public class ForagerManager : MonoBehaviour
         TravelingToHive    
     }
 
+    [Serializable]
     class Forager {
         public ForagerState state;
         public int resources;
@@ -47,6 +48,8 @@ public class ForagerManager : MonoBehaviour
 
     public static ForagerManager instance;
 
+    [SerializeField]
+    [ReadOnly]
     Dictionary<Route, List<Forager>> foragerDict = new Dictionary<Route, List<Forager>>();
 
     private void Awake()
@@ -95,17 +98,10 @@ public class ForagerManager : MonoBehaviour
             Forager f = foragerDict[route][n];
             if(f.state != ForagerState.TravelingToHive) {
                 foragerDict[route].RemoveAt(n);
-                ResourceManager.instance.AddWorker();  //Why this giving us an extra worker? Forager should be returning to hive //Because the foragers in dict are copies
+                ResourceManager.instance.AddWorker();  
                 n--;
             }
         }
-
-        //foreach (Forager f in foragerDict[route]) { 
-        //    if(f.state != ForagerState.TravelingToHive) {
-        //        foragerDict[route].Remove(f);
-        //        ResourceManager.instance.AddWorker();
-        //    }
-        //}
     }
 
     //On route closed, remove all workers immediately
@@ -124,16 +120,12 @@ public class ForagerManager : MonoBehaviour
 
     //Return a specific forager
     void ReturnForager(Forager forager) {
+        if(!foragerDict.ContainsKey(forager.Route)) {
+            return;
+        }
         List<Forager> routeForagers = foragerDict[forager.Route];
         routeForagers.Remove(forager);
-        /*
-        foreach(Forager f in routeForagers) { 
-            if(f.Equals(forager)) {
-                routeForagers.Remove(f);
-                break;
-            }
-        }
-        */
+
         if(routeForagers.Count == 0) {
             foragerDict.Remove(forager.Route);
         }

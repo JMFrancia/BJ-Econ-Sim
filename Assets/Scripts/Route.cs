@@ -67,7 +67,7 @@ public class Route
     public int GetResources(int amt) {
         int result = Mathf.Clamp(amt, 0, Resources);
         Resources -= result;
-        if(Resources <= 0) {
+        if(Resources <= 0 && !Depleted) {
             Depleted = true;
             EventManager.TriggerEvent(EventNames.ROUTE_DEPLETED, this);
         }
