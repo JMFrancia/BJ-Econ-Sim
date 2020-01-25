@@ -73,44 +73,49 @@ public class RecordManager : MonoBehaviour
         AllRecords.Add(record);
     }
 
-    void WriteRecordsToCSV() {
+    void WriteRecordsToCSV(bool vertical = true) {
 
-        string stepRow = $"{STEP_LABEL},";
-        string workersRow = $"{WORKERS_LABEL},";
-        string nectarRow = $"{NECTAR_LABEL},";
-        string pollenRow = $"{POLLEN_LABEL},";
-        string foragersRow = $"{FORAGERS_LABEL},";
-        string foragingCellsRow = $"{FORAGING_CELLS_LABEL},";
-        string foragingFramesRow = $"{FORAGING_FRAMES_LABEL},";
+        string totalRecord;
 
-        foreach(Record r in AllRecords) {
-            Dictionary<string, int> thisRecord = r.Get();
-            stepRow += $"{r.step},";
-            workersRow += $"{r.workers},";
-            nectarRow += $"{r.nectar},";
-            pollenRow += $"{r.pollen},";
-            foragersRow += $"{r.foragers},";
-            foragingCellsRow += $"{r.foragingCells},";
-            foragingFramesRow += $"{r.foragingFrames},";
+        if (vertical)
+        {
+            totalRecord = $"{STEP_LABEL},{WORKERS_LABEL},{NECTAR_LABEL},{POLLEN_LABEL},{FORAGERS_LABEL},{FORAGING_CELLS_LABEL},{FORAGING_FRAMES_LABEL}\n";
+            foreach (Record r in AllRecords) {
+                totalRecord += $"{r.step},{r.workers},{r.nectar},{r.pollen},{r.foragers},{r.foragingCells},{r.foragingFrames}\n";
+            }
+        }
+        else
+        {
+            string stepRow = $"{STEP_LABEL},";
+            string workersRow = $"{WORKERS_LABEL},";
+            string nectarRow = $"{NECTAR_LABEL},";
+            string pollenRow = $"{POLLEN_LABEL},";
+            string foragersRow = $"{FORAGERS_LABEL},";
+            string foragingCellsRow = $"{FORAGING_CELLS_LABEL},";
+            string foragingFramesRow = $"{FORAGING_FRAMES_LABEL},";
+
+            foreach (Record r in AllRecords)
+            {
+                Dictionary<string, int> thisRecord = r.Get();
+                stepRow += $"{r.step},";
+                workersRow += $"{r.workers},";
+                nectarRow += $"{r.nectar},";
+                pollenRow += $"{r.pollen},";
+                foragersRow += $"{r.foragers},";
+                foragingCellsRow += $"{r.foragingCells},";
+                foragingFramesRow += $"{r.foragingFrames},";
+            }
+
+            totalRecord = $"{stepRow}\n{workersRow}\n{nectarRow}\n{pollenRow}\n{foragersRow}\n{foragingCellsRow}\n{foragingFramesRow}";
         }
 
-        string totalRecord = $"{stepRow}\n{workersRow}\n{nectarRow}\n{pollenRow}\n{foragersRow}\n{foragingCellsRow}\n{foragingFramesRow}";
 
-       
         string fullPath = GetPath() + GenerateFileName();
 
 
         Debug.Log($"Writing session record to {fullPath}...");
         File.WriteAllText(fullPath, totalRecord);
         Debug.Log($"Record complete");
-
-
-        /*
-        StreamWriter writer = new StreamWriter(GetPath());
-        writer.WriteLine(totalRecord);
-        writer.Flush();
-        writer.Close();
-        */
     }
 
     string GetPath() {
