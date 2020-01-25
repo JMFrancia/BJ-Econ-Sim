@@ -23,6 +23,7 @@ public class Route
         Resources = resources;
         WorkerCapacity = workerCapcity;
         Depleted = false;
+        Closed = false;
     }
 
     public bool HasCapacity() {
@@ -39,12 +40,15 @@ public class Route
         return false;
     }
 
-    public bool RemoveForager(bool registerChange = true)
+    public bool RemoveForager(bool registerChange = true, bool removeFromForageMgr = true)
     {
         if (WorkersAssigned > 0)
         {
             WorkersAssigned--;
-            ForagerManager.instance.ReturnForager(this);
+
+            //Returning rando forager even if should be removing specific one
+            if(removeFromForageMgr)
+                ForagerManager.instance.ReturnForager(this);
             if (WorkersAssigned == 0) {
                 Closed = true;
             }
@@ -58,7 +62,6 @@ public class Route
     public void RemoveAllForagers()
     {
         while (RemoveForager(false)) { }
-        OnChange();
     }
 
     public int GetResources(int amt) {
@@ -66,6 +69,7 @@ public class Route
         Resources -= result;
         if(Resources <= 0) {
             Depleted = true;
+            EventManager.TriggerEvent(EventNames.ROUTE_DEPLETED, this);
         }
         OnChange();
         return result;

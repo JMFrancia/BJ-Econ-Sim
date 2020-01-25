@@ -53,15 +53,18 @@ public class RouteListEntry : MonoBehaviour
         if (Route.Depleted)
         {
             LockRouteListEntry();
+            return;
         }
 
         resourcesText.text = Route.Resources.ToString();
         foragersText.text = $"{Route.WorkersAssigned} / {Route.WorkerCapacity}";
     }
 
-    void LockRouteListEntry() { 
-    //Lock here
-    
+    void LockRouteListEntry() {
+        plusButton.interactable = false;
+        minusButton.interactable = false;
+        foragersText.text = Route.WorkersAssigned.ToString();
+        resourcesText.text = "DEPLETED";
     }
 
     void DestroyRouteListEntry() {

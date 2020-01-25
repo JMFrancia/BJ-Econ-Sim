@@ -6,15 +6,13 @@ using UnityEngine;
 //Refactor to contain list of actual foragers, along with their states and inventory
 public class ForagerManager : MonoBehaviour
 {
-    public static ForagerManager instance;
-
     enum ForagerState { 
         TravelingToFlower,
         Foraging,
         TravelingToHive    
     }
 
-    struct Forager {
+    class Forager {
         public ForagerState state;
         public int resources;
         public int estTaskCompletion;
@@ -29,7 +27,7 @@ public class ForagerManager : MonoBehaviour
 
         //Higher # means further away from returning resources
         //Relative to all possible positions on the route
-        public int GetPriority()
+        public int CalcPriority()
         {
             int stagePriority = 0;
             switch (state) {
@@ -46,6 +44,9 @@ public class ForagerManager : MonoBehaviour
         }
     }
 
+
+    public static ForagerManager instance;
+
     Dictionary<Route, List<Forager>> foragerDict = new Dictionary<Route, List<Forager>>();
 
     private void Awake()
@@ -55,6 +56,16 @@ public class ForagerManager : MonoBehaviour
         } else {
             Destroy(this);
         }
+    }
+
+    private void OnEnable()
+    {
+        EventManager.StartListeningClass(EventNames.ROUTE_DEPLETED, OnRouteDepleted);
+    }
+
+    private void OnDisable()
+    {
+        EventManager.StopListeningClass(EventNames.ROUTE_DEPLETED, OnRouteDepleted);
     }
 
     public bool AddForager(Route route) { 
@@ -80,12 +91,21 @@ public class ForagerManager : MonoBehaviour
 
     //On route depleted, remove all workers not currently carrying resources
     void OnRouteDepleted(Route route) { 
-        foreach(Forager f in foragerDict[route]) { 
+        for(int n = 0; n < foragerDict[route].Count; n++) {
+            Forager f = foragerDict[route][n];
             if(f.state != ForagerState.TravelingToHive) {
-                foragerDict[route].Remove(f);
-                ResourceManager.instance.AddWorker();
+                foragerDict[route].RemoveAt(n);
+                ResourceManager.instance.AddWorker();  //Why this giving us an extra worker? Forager should be returning to hive //Because the foragers in dict are copies
+                n--;
             }
         }
+
+        //foreach (Forager f in foragerDict[route]) { 
+        //    if(f.state != ForagerState.TravelingToHive) {
+        //        foragerDict[route].Remove(f);
+        //        ResourceManager.instance.AddWorker();
+        //    }
+        //}
     }
 
     //On route closed, remove all workers immediately
@@ -98,26 +118,30 @@ public class ForagerManager : MonoBehaviour
 
     //Return forager least likely to return resources soon
     public void ReturnForager(Route route) {
-        List<Forager> sortedList = foragerDict[route].OrderByDescending(f => f.GetPriority()).ToList();
+        List<Forager> sortedList = foragerDict[route].OrderByDescending(f => f.CalcPriority()).ToList();
         ReturnForager(sortedList[0]);
     }
 
     //Return a specific forager
     void ReturnForager(Forager forager) {
         List<Forager> routeForagers = foragerDict[forager.Route];
+        routeForagers.Remove(forager);
+        /*
         foreach(Forager f in routeForagers) { 
             if(f.Equals(forager)) {
                 routeForagers.Remove(f);
+                break;
             }
         }
+        */
         if(routeForagers.Count == 0) {
             foragerDict.Remove(forager.Route);
         }
         ResourceManager.instance.AddWorker();
     }
 
-    void OnForagerTaskCompleted(Forager forager) { 
-        //Check state and initialize next steps
+    //Check state and initialize next steps
+    void OnForagerTaskCompleted(Forager forager) {
         switch(forager.state) {
             case ForagerState.TravelingToFlower:
                 Forage(forager);
@@ -133,6 +157,8 @@ public class ForagerManager : MonoBehaviour
 
     void SendToRoute(Forager forager)
     {
+        forager.state = ForagerState.TravelingToFlower;
+
         int travelTime = CalcRouteTravelTime(forager.Route);
         forager.estTaskCompletion = travelTime + StepController.StepNumber;
         string startMessage = $"Forager {forager} leaving hive for route {forager.Route.Name}. Est. arrival: step {forager.estTaskCompletion}";
@@ -147,6 +173,7 @@ public class ForagerManager : MonoBehaviour
     void Forage(Forager forager)
     {
         forager.state = ForagerState.Foraging;
+
         forager.estTaskCompletion = ControlManager.Times.ForageTime + StepController.StepNumber;
         string startingMessage = $"Forager {forager} beginning foraging on route {forager.Route.Name}. Est. Completion: {forager.estTaskCompletion}";
         string endingMessage = $"Forager {forager} ended foraging on route {forager.Route.Name}";
@@ -160,7 +187,6 @@ public class ForagerManager : MonoBehaviour
     {
         //Schedule return to hive
         forager.state = ForagerState.TravelingToHive;
-
 
         int travelTime = CalcRouteTravelTime(forager.Route);
         forager.resources = forager.Route.GetResources(ControlManager.Quantities.GatherRate);
@@ -177,13 +203,23 @@ public class ForagerManager : MonoBehaviour
         ResourceManager.instance.AddNectar(forager.resources);
         ResourceManager.instance.AddPollen(forager.resources);
 
-        //if route still open, repeat
-        if (!forager.Route.Depleted && !forager.Route.Closed)
-        {
-            SendToRoute(forager);
-        } else {
+        if(forager.Route.Depleted) {
+
+            //Resources being returned -> 
+            forager.Route.RemoveForager(removeFromForageMgr: false);
             ReturnForager(forager);
+        } else {
+            SendToRoute(forager);
         }
+
+
+        //if route still open, repeat
+        //if (!forager.Route.Depleted && !forager.Route.Closed)
+        //{
+        //    SendToRoute(forager);
+        //} else {
+        //    ReturnForager(forager);
+        //}
     }
 
     int CalcRouteTravelTime(Route route) { 
