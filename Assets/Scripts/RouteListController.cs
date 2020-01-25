@@ -11,8 +11,7 @@ public class RouteListController : MonoBehaviour
 
     [SerializeField] int maxRange = 5;
     [SerializeField] Button AddRouteButton;
-
-    public int MaxRoutes { get; private set; } = 3;
+    int routesPerForagingFrame = 3;
 
     private void Awake()
     {
@@ -21,7 +20,7 @@ public class RouteListController : MonoBehaviour
     }
 
     void AddRoute() {
-        if (RouteListEntry.TotalRoutes >= MaxRoutes)
+        if (RouteListEntry.TotalRoutes >= routesPerForagingFrame * JobManager.instance.ForagingFrameManager.Frames)
             return;
         GameObject newRouteGO = Instantiate(RouteListEntryPrefab);
         newRouteGO.transform.parent = gameObject.transform;

@@ -72,10 +72,12 @@ public class ForagerManager : SerializedMonoBehaviour
     }
 
     public bool AddForager(Route route) { 
-        if(route.HasCapacity() && ResourceManager.instance.RemoveWorker())
-        {
+        if( route.HasCapacity() && 
+            JobManager.instance.ForagingFrameManager.HasFreeCell() && 
+            ResourceManager.instance.RemoveWorker()
+        ) {
             route.AddForager();
-
+            JobManager.instance.ForagingFrameManager.ActivateCell();
 
             Forager forager = new Forager(route);
 
@@ -98,7 +100,8 @@ public class ForagerManager : SerializedMonoBehaviour
             Forager f = foragerDict[route][n];
             if(f.state != ForagerState.TravelingToHive) {
                 foragerDict[route].RemoveAt(n);
-                ResourceManager.instance.AddWorker();  
+                ResourceManager.instance.AddWorker();
+                JobManager.instance.ForagingFrameManager.DeactivateCell(); 
                 n--;
             }
         }
@@ -107,8 +110,7 @@ public class ForagerManager : SerializedMonoBehaviour
     //On route closed, remove all workers immediately
     void OnRouteClose(Route route) { 
         foreach(Forager f in foragerDict[route]) {
-            foragerDict[route].Remove(f);
-            ResourceManager.instance.AddWorker();
+            ReturnForager(f);
         }
     }
 
@@ -130,6 +132,7 @@ public class ForagerManager : SerializedMonoBehaviour
             foragerDict.Remove(forager.Route);
         }
         ResourceManager.instance.AddWorker();
+        JobManager.instance.ForagingFrameManager.DeactivateCell();
     }
 
     //Check state and initialize next steps

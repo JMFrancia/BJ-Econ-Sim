@@ -62,7 +62,7 @@ public class ScheduleManager : MonoBehaviour
 
     void OnStep(int stepNumber) {
         while (schedule.Count > 0 && stepNumber >= schedule.First.ScheduledStep) {
-             Debug.Log("Step " + stepNumber);
+             Debug.Log($"Step {stepNumber}:");
             schedule.Dequeue().Activate();
         }
     }
