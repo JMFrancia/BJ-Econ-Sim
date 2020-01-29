@@ -40,7 +40,7 @@ public class ScheduleManager : MonoBehaviour
         int scheduledStep = steps + StepController.StepNumber;
         schedule.Enqueue(new ScheduleItem(callback, scheduledStep, completionMessage), scheduledStep);
         if(startingMessage != null) {
-            Debug.Log(startingMessage);
+            LogManager.instance.AddToLog(startingMessage);
         }
     }
 
@@ -57,12 +57,11 @@ public class ScheduleManager : MonoBehaviour
         }
         int scheduledStep = steps + StepController.StepNumber;
         schedule.Enqueue(new ScheduleItem<T>(eventName, param, scheduledStep, completionMessage), scheduledStep);
-        Debug.Log("Scheduled " + eventName + " with " + param + " for step " + scheduledStep);
+        LogManager.instance.AddToLog($"Scheduled {eventName} with {param} for step {scheduledStep}");
     }
 
     void OnStep(int stepNumber) {
         while (schedule.Count > 0 && stepNumber >= schedule.First.ScheduledStep) {
-             Debug.Log($"Step {stepNumber}:");
             schedule.Dequeue().Activate();
         }
     }
@@ -90,7 +89,7 @@ public class ScheduleManager : MonoBehaviour
 
         public override void Activate()
         {
-            Debug.Log(CompletionMessage);
+            LogManager.instance.AddToLog(CompletionMessage);
             CallBack.Invoke();
         }
     }
@@ -126,7 +125,7 @@ public class ScheduleManager : MonoBehaviour
             }
             if (CompletionMessage != null)
             {
-                Debug.Log(CompletionMessage);
+                LogManager.instance.AddToLog(CompletionMessage);
             }
         }
     }

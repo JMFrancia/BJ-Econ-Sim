@@ -58,7 +58,6 @@ public class StepController : MonoBehaviour
     }
 
     IEnumerator AutoStep() {
-        Debug.Log("Beginning auto step with speed " + AutoSpeed);
         while(Auto) {
             Step();
             yield return new WaitForSeconds(AutoSpeed);
@@ -73,6 +72,5 @@ public class StepController : MonoBehaviour
         } catch (System.FormatException e) {
             AutoSpeed = oldVal;
         }
-        Debug.Log("Changing auto step speed to " + AutoSpeed);
     }
 }
