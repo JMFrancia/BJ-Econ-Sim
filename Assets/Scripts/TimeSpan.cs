@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
+[Serializable]
 public class TimeSpan
 {
     public int Seconds { get; private set; } = 0;
@@ -7,7 +9,24 @@ public class TimeSpan
     public int Hours { get; private set; } = 0;
     public int Days { get; private set; } = 0;
 
-    public TimeSpan() {}
+    public int TotalSeconds {
+        get {
+            return Seconds + TotalMinutes * 60;
+        } 
+    }
+    public int TotalMinutes { 
+        get 
+        {
+            return Minutes + TotalHours * 60;
+        }
+    }
+    public int TotalHours { 
+        get {
+            return Hours + Days * 24;
+        }
+    } 
+
+    public TimeSpan() : this(0, 0, 0, 0) { }
 
     public TimeSpan(int seconds, int minutes = 0, int hours = 0, int days = 0) {
         Set(seconds, minutes, hours, days);
@@ -48,21 +67,6 @@ public class TimeSpan
 
     public void Increment(TimeSpan timeSpan) {
         Increment(timeSpan.Seconds, timeSpan.Minutes, timeSpan.Hours, timeSpan.Days);
-    }
-
-    public int TotalSeconds()
-    {
-        return Seconds + TotalMinutes() * 60;
-    }
-
-    public int TotalMinutes()
-    {
-        return Minutes + TotalHours() * 60;
-    }
-
-    public int TotalHours()
-    {
-        return Hours + Days * 24;
     }
 
     public override string ToString()

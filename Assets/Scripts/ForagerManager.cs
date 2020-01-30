@@ -114,7 +114,7 @@ public class ForagerManager : SerializedMonoBehaviour
         }
     }
 
-    //Return forager least likely to return resources soon
+    //Return the forager least likely to return resources soon
     public void ReturnForager(Route route) {
         List<Forager> sortedList = foragerDict[route].OrderByDescending(f => f.CalcPriority()).ToList();
         ReturnForager(sortedList[0]);
@@ -169,13 +169,13 @@ public class ForagerManager : SerializedMonoBehaviour
     {
         forager.state = ForagerState.Foraging;
 
-        forager.estTaskCompletion = ControlManager.Times.ForageTime + StepController.StepNumber;
+        forager.estTaskCompletion = ControlManager.instance.Times.ForageTime + StepController.StepNumber;
         string startingMessage = $"Forager {forager} beginning foraging on route {forager.Route.Name}. Est. Completion: {forager.estTaskCompletion}";
         string endingMessage = $"Forager {forager} ended foraging on route {forager.Route.Name}";
         Action callback = () => OnForagerTaskCompleted(forager);
 
         //Schedule end of foraging
-        ScheduleManager.instance.AddScheduleItem(ControlManager.Times.ForageTime, callback, startingMessage, endingMessage);
+        ScheduleManager.instance.AddScheduleItem(ControlManager.instance.Times.ForageTime, callback, startingMessage, endingMessage);
     }
 
     void CompleteForaging(Forager forager)
@@ -184,7 +184,7 @@ public class ForagerManager : SerializedMonoBehaviour
         forager.state = ForagerState.TravelingToHive;
 
         int travelTime = CalcRouteTravelTime(forager.Route);
-        forager.resources = forager.Route.GetResources(ControlManager.Quantities.GatherRate);
+        forager.resources = forager.Route.GetResources(ControlManager.instance.Quantities.GatherRate);
         forager.estTaskCompletion = travelTime + StepController.StepNumber;
         string departingMessage = $"Forager {forager} leaving from route {forager.Route.Name} to return to hive with {forager.resources} resources. Est arrival: {forager.estTaskCompletion}";
         string arrivingMessage = $"Forager {forager} returned successfully to hive with {forager.resources} resources";
@@ -199,25 +199,14 @@ public class ForagerManager : SerializedMonoBehaviour
         ResourceManager.instance.AddPollen(forager.resources);
 
         if(forager.Route.Depleted) {
-
-            //Resources being returned -> 
             forager.Route.RemoveForager(removeFromForageMgr: false);
             ReturnForager(forager);
         } else {
             SendToRoute(forager);
         }
-
-
-        //if route still open, repeat
-        //if (!forager.Route.Depleted && !forager.Route.Closed)
-        //{
-        //    SendToRoute(forager);
-        //} else {
-        //    ReturnForager(forager);
-        //}
     }
 
     int CalcRouteTravelTime(Route route) { 
-        return route.Distance * ControlManager.Times.TravelTime; 
+        return route.Distance * ControlManager.instance.Times.TravelTime; 
     }
 }

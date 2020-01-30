@@ -11,17 +11,25 @@ public class StepController : MonoBehaviour
     [SerializeField] Toggle autoToggle;
     [SerializeField] InputField speedInput;
 
-    public static int StepNumber { get; private set; } = 0;
+    public static int StepNumber { get; private set; }
     public static bool Auto { get; private set; } = false;
     public static float AutoSpeed { get; private set; } = 5f;
 
-    TimeSpan timeElapsed = new TimeSpan();
-    TimeSpan timePerStep = new TimeSpan(300);
+    TimeSpan timeElapsed;
+    TimeSpan timePerStep;
 
     Coroutine autoStepRoutine;
 
     private void Awake()
     {
+        StepNumber = ControlManager.instance.StartingValues.Step;
+        timePerStep = new TimeSpan(ControlManager.instance.Times.SecondsPerStep);
+        if(StepNumber > 0) {
+            timeElapsed = new TimeSpan(StepNumber * timePerStep.TotalSeconds);
+        } else {
+            timeElapsed = new TimeSpan();
+        }
+
         stepButton.onClick.RemoveListener(Step);
         stepButton.onClick.AddListener(Step);
 

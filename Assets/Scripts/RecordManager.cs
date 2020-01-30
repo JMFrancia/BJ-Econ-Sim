@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -15,6 +15,7 @@ public class RecordManager : MonoBehaviour
     const string FORAGING_FRAMES_LABEL = "Foraging Frames";
     const string LOG_LABEL = "Game Log";
 
+    [Serializable]
     class Record {
         public int step;
         public int workers;
@@ -84,7 +85,6 @@ public class RecordManager : MonoBehaviour
     }
 
     void WriteRecordsToCSV(bool vertical = true) {
-
         string totalRecord;
 
         AttachGameLogsToRecord();
@@ -147,6 +147,7 @@ public class RecordManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        WriteRecordsToCSV();
+        if(StepController.StepNumber > 0)
+            WriteRecordsToCSV();
     }
 }
