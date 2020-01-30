@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -14,7 +14,8 @@ public class RecordManager : MonoBehaviour
     const string FORAGING_CELLS_LABEL = "Foraging cells";
     const string FORAGING_FRAMES_LABEL = "Foraging Frames";
 
-    struct Record {
+    [Serializable]
+    class Record {
         public int step;
         public int workers;
         public int nectar;
@@ -74,7 +75,6 @@ public class RecordManager : MonoBehaviour
     }
 
     void WriteRecordsToCSV(bool vertical = true) {
-
         string totalRecord;
 
         if (vertical)
@@ -133,6 +133,7 @@ public class RecordManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        WriteRecordsToCSV();
+        if(StepController.StepNumber > 0)
+            WriteRecordsToCSV();
     }
 }

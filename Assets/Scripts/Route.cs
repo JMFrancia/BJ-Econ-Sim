@@ -16,12 +16,12 @@ public class Route
 
     public Action OnChange;
 
-    public Route(string name, int rarity, int distance, int resources, int workerCapcity) {
+    public Route(string name, int rarity, int distance, int resources, int workerCapacity) {
         Name = name;
         Rarity = rarity;
         Distance = distance;
         Resources = resources;
-        WorkerCapacity = workerCapcity;
+        WorkerCapacity = workerCapacity;
         Depleted = false;
         Closed = false;
     }
