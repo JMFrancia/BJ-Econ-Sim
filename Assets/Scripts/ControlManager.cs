@@ -53,6 +53,9 @@ public class ControlManager : MonoBehaviour
     public class QuantityControls
     {
         public int GatherRate = 3;
+        public int ForagingCellsPerFrame = 8;
+        public int BakeryCellsPerFrame = 4;
+        public int NursingCellsPerFrame = 4;
     }
 
     [Serializable]

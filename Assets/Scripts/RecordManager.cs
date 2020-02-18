@@ -70,8 +70,8 @@ public class RecordManager : MonoBehaviour
             workers: ResourceManager.Workers,
             nectar: ResourceManager.Nectar,
             pollen: ResourceManager.Pollen,
-            foragers: JobManager.instance.ForagingFrameManager.ActiveCells,
-            foragingCells: JobManager.instance.ForagingFrameManager.Cells,
+            foragers: JobManager.instance.ForagingCellManager.ActiveCells,
+            foragingCells: JobManager.instance.ForagingCellManager.Cells,
             foragingFrames: JobManager.instance.ForagingFrameManager.Frames
         );
 

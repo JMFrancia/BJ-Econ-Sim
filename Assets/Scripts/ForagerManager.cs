@@ -73,11 +73,11 @@ public class ForagerManager : SerializedMonoBehaviour
 
     public bool AddForager(Route route) { 
         if( route.HasCapacity() && 
-            JobManager.instance.ForagingFrameManager.HasFreeCell() && 
+            JobManager.instance.ForagingCellManager.HasFreeCell() && 
             ResourceManager.instance.RemoveWorker()
         ) {
             route.AddForager();
-            JobManager.instance.ForagingFrameManager.ActivateCell();
+            JobManager.instance.ForagingCellManager.ActivateCell();
 
             Forager forager = new Forager(route);
 
@@ -101,7 +101,7 @@ public class ForagerManager : SerializedMonoBehaviour
             if(f.state != ForagerState.TravelingToHive) {
                 foragerDict[route].RemoveAt(n);
                 ResourceManager.instance.AddWorker();
-                JobManager.instance.ForagingFrameManager.DeactivateCell(); 
+                JobManager.instance.ForagingCellManager.DeactivateCell(); 
                 n--;
             }
         }
@@ -132,7 +132,7 @@ public class ForagerManager : SerializedMonoBehaviour
             foragerDict.Remove(forager.Route);
         }
         ResourceManager.instance.AddWorker();
-        JobManager.instance.ForagingFrameManager.DeactivateCell();
+        JobManager.instance.ForagingCellManager.DeactivateCell();
     }
 
     //Check state and initialize next steps

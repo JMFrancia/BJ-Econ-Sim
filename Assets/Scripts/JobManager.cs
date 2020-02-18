@@ -5,15 +5,48 @@ public class JobManager : MonoBehaviour
 {
     public static JobManager instance;
 
-    [SerializeField]
-    public FrameCellManager ForagingFrameManager { 
+    public FrameManager ForagingFrameManager {
+        get {
+            return foragingFrameManager;
+        }
+    }
+
+    public FrameManager NursingFrameManager
+    {
+        get
+        {
+            return nursingFrameManager;
+        }
+    }
+
+    public CellManager ForagingCellManager { 
         get { 
-            return foragingFrameManager; 
+            return foragingCellManager; 
         } 
     }
 
-    [SerializeField]
-    FrameCellManager foragingFrameManager;
+    public CellManager NursingCelLManager
+    {
+        get
+        {
+            return nursingCellManager;
+        }
+    }
+
+    public CellManager BakeryCellManager
+    {
+        get
+        {
+            return bakeryCellManager;
+        }
+    }
+
+    [SerializeField] FrameManager foragingFrameManager;
+    [SerializeField] FrameManager nursingFrameManager;
+
+    [SerializeField] CellManager foragingCellManager;
+    [SerializeField] CellManager nursingCellManager;
+    [SerializeField] CellManager bakeryCellManager;
 
     private void Awake()
     {
