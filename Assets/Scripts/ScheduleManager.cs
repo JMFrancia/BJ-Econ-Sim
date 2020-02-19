@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Priority_Queue;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
-using Priority_Queue;
 
 public class ScheduleManager : MonoBehaviour
 {
     public static ScheduleManager instance;
 
     SimplePriorityQueue<BaseScheduleItem> schedule = new SimplePriorityQueue<BaseScheduleItem>();
+    Dictionary<int, BaseScheduleItem> itemDict = new Dictionary<int, BaseScheduleItem>();
 
     private void Awake()
     {
@@ -30,21 +32,34 @@ public class ScheduleManager : MonoBehaviour
         EventManager.StopListening(EventNames.STEP, OnStep);
     }
 
-    public void AddScheduleItem(int steps, Action callback, string startingMessage = null, string completionMessage = null) { 
+    public bool RemoveScheduleItem(int id) { 
+        if(itemDict.ContainsKey(id)) {
+            return schedule.TryRemove(itemDict[id]);
+        }
+        return false;
+    }
+
+    //Returns ID of new schedule item
+    public int AddScheduleItem(int steps, Action callback, string startingMessage = null, string completionMessage = null) { 
         if(steps < 0) {
-            return;
+            //Invalid start time
+            return -1;
         }
         if (steps == 0) {
             callback.Invoke();
         }
         int scheduledStep = steps + StepController.StepNumber;
-        schedule.Enqueue(new ScheduleItem(callback, scheduledStep, completionMessage), scheduledStep);
+        ScheduleItem item = new ScheduleItem(callback, scheduledStep, completionMessage);
+        schedule.Enqueue(item, scheduledStep);
+        itemDict[item.ID] = item;
         if(startingMessage != null) {
             LogManager.instance.AddToLog(startingMessage);
         }
+        return item.ID;
     }
 
-    //Not really used, keeping in case of future use
+    //Not really used, keeping in case of future use.
+    //Needs to be updated to use itemDict
     public void AddScheduleItem<T>(int steps, string eventName, T param, string completionMessage = null) {
         if (steps < 0)
         {
@@ -62,7 +77,9 @@ public class ScheduleManager : MonoBehaviour
 
     void OnStep(int stepNumber) {
         while (schedule.Count > 0 && stepNumber >= schedule.First.ScheduledStep) {
-            schedule.Dequeue().Activate();
+            BaseScheduleItem item = schedule.Dequeue();
+            itemDict.Remove(item.ID);
+            item.Activate();
         }
     }
 
@@ -70,6 +87,7 @@ public class ScheduleManager : MonoBehaviour
         public string EventName { get; protected set; }
         public int ScheduledStep { get; protected set; }
         public string CompletionMessage { get; protected set; }
+        public int ID { get; protected set; }
 
         protected BaseScheduleItem(string eventName, int scheduledStep, string completionMessage = null) {
             EventName = eventName;
@@ -80,11 +98,16 @@ public class ScheduleManager : MonoBehaviour
         public abstract void Activate();
     }
 
+    [Serializable]
     class ScheduleItem : BaseScheduleItem { 
         public Action CallBack { get; private set; }
 
+        static int currentID = 0;
+        const int MAX_ID = 9999999;  //Reflects max # of items to schedule
+
         public ScheduleItem(Action callBack, int scheduledStep, string completionMessage = null) : base("", scheduledStep, completionMessage) {
             CallBack = callBack;
+            ID = currentID++ % MAX_ID;
         }
 
         public override void Activate()

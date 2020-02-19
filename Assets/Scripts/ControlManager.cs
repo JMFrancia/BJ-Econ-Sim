@@ -9,7 +9,7 @@ public class ControlManager : MonoBehaviour
 
     //Bad use case to load serialized fields into static vars
     //Probs creating race condition
-    //Use singleton
+    //Using singleton instead
     public TimeControls Times { get { return _times; } }
     public QuantityControls Quantities { get { return _quantities; } }
     public RouteControls Routes { get { return _routes; } }
@@ -47,6 +47,7 @@ public class ControlManager : MonoBehaviour
         public int SecondsPerStep = 300;
         public int TravelTime = 2;
         public int ForageTime = 5;
+        public int BakingTime = 5;
     }
 
     [Serializable]
@@ -56,6 +57,7 @@ public class ControlManager : MonoBehaviour
         public int ForagingCellsPerFrame = 8;
         public int BakeryCellsPerFrame = 4;
         public int NursingCellsPerFrame = 4;
+        public int PollenPerBread = 3;
     }
 
     [Serializable]

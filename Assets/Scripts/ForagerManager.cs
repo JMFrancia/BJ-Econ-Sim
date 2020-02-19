@@ -17,6 +17,7 @@ public class ForagerManager : SerializedMonoBehaviour
         public ForagerState state;
         public int resources;
         public int estTaskCompletion;
+        public int taskId;
         public Route Route { get; private set; }
 
         public Forager(Route r) {
@@ -133,6 +134,7 @@ public class ForagerManager : SerializedMonoBehaviour
         }
         ResourceManager.instance.AddWorker();
         JobManager.instance.ForagingCellManager.DeactivateCell();
+        ScheduleManager.instance.RemoveScheduleItem(forager.taskId);
     }
 
     //Check state and initialize next steps
@@ -161,7 +163,7 @@ public class ForagerManager : SerializedMonoBehaviour
         Action callback = () => OnForagerTaskCompleted(forager);
 
         //Schedule begin foraging upon arrival
-        ScheduleManager.instance.AddScheduleItem(travelTime, callback, startMessage, endMessage);
+        forager.taskId = ScheduleManager.instance.AddScheduleItem(travelTime, callback, startMessage, endMessage);
     }
 
 
@@ -175,7 +177,7 @@ public class ForagerManager : SerializedMonoBehaviour
         Action callback = () => OnForagerTaskCompleted(forager);
 
         //Schedule end of foraging
-        ScheduleManager.instance.AddScheduleItem(ControlManager.instance.Times.ForageTime, callback, startingMessage, endingMessage);
+        forager.taskId = ScheduleManager.instance.AddScheduleItem(ControlManager.instance.Times.ForageTime, callback, startingMessage, endingMessage);
     }
 
     void CompleteForaging(Forager forager)
@@ -191,7 +193,7 @@ public class ForagerManager : SerializedMonoBehaviour
         Action callback = () => OnForagerTaskCompleted(forager);
 
 
-        ScheduleManager.instance.AddScheduleItem(travelTime, callback, departingMessage, arrivingMessage);
+        forager.taskId = ScheduleManager.instance.AddScheduleItem(travelTime, callback, departingMessage, arrivingMessage);
     }
 
     void ReturnToHive(Forager forager) {
