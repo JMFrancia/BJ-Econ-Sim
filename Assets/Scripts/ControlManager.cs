@@ -58,6 +58,7 @@ public class ControlManager : MonoBehaviour
         public int BakeryCellsPerFrame = 4;
         public int NursingCellsPerFrame = 4;
         public int PollenPerBread = 3;
+        public int BreadPerBake = 1;
     }
 
     [Serializable]

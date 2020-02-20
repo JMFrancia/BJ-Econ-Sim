@@ -15,6 +15,7 @@ public class BakeryManager : MonoBehaviour
     class Baker {
         public BakerState state;
         public int estTaskCompletion;
+        public int taskId;
 
         public Baker() {
             state = BakerState.WaitingOnPollen;
@@ -31,7 +32,6 @@ public class BakeryManager : MonoBehaviour
     [SerializeField] Button addBakerButton;
     [SerializeField] Button removeBakerButton;
 
-
     CellManager bakeryCellManager;
     List<Baker> bakers = new List<Baker>();
 
@@ -46,13 +46,12 @@ public class BakeryManager : MonoBehaviour
             Destroy(this);
         }
 
-        addBakerButton.onClick.RemoveListener(OnAddBakerButtonPress);
-        addBakerButton.onClick.AddListener(OnAddBakerButtonPress);
+        addBakerButton.onClick.RemoveListener(AddBaker);
+        addBakerButton.onClick.AddListener(AddBaker);
 
-        removeBakerButton.onClick.RemoveListener(OnRemoveBakerButtonPress);
-        removeBakerButton.onClick.AddListener(OnRemoveBakerButtonPress);
+        removeBakerButton.onClick.RemoveListener(RemoveBaker);
+        removeBakerButton.onClick.AddListener(RemoveBaker);
 
-        bakeryCellManager = JobManager.instance.BakeryCellManager;
     }
 
     void OnAddBakerButtonPress() { }
@@ -60,11 +59,13 @@ public class BakeryManager : MonoBehaviour
     void OnRemoveBakerButtonPress() { }
 
     void AddBaker() {
-        if(bakeryCellManager.HasFreeCell() && 
+        if(JobManager.instance.BakeryCellManager.HasFreeCell() && 
            ResourceManager.instance.RemoveWorker()
         ) {
-            Baker newBaker = new Baker();
-
+            JobManager.instance.BakeryCellManager.ActivateCell();
+            Baker baker = new Baker();
+            bakers.Add(baker);
+            BakeBread(baker);
         }
     }
 
@@ -73,26 +74,30 @@ public class BakeryManager : MonoBehaviour
             return;
         List<Baker> sortedList = bakers.OrderByDescending(f => f.CalcPriority()).ToList();
 
-
-
+        Baker baker = sortedList[0];
         ResourceManager.instance.AddWorker();
-        bakeryCellManager.DeactivateCell();
+        JobManager.instance.BakeryCellManager.DeactivateCell();
+        ScheduleManager.instance.RemoveScheduleItem(baker.taskId);
+        bakers.Remove(baker);
     }
 
     void BakeBread(Baker baker) { 
-        if(ResourceManager.instance.RemoveBread(ControlManager.instance.Quantities.PollenPerBread)) {
+        //If was already in baking state, assume just completed baking
+        if(baker.state == BakerState.Baking) {
+            ResourceManager.instance.AddBread(ControlManager.instance.Quantities.BreadPerBake);
+        }
+        if (ResourceManager.instance.RemovePollen(ControlManager.instance.Quantities.PollenPerBread)) {
             baker.state = BakerState.Baking;
             baker.estTaskCompletion = ControlManager.instance.Times.BakingTime + StepController.StepNumber;
             string startingMessage = $"Baker {baker} starting to bake bread. Est completion: {baker.estTaskCompletion}";
             string endingMessage = $"Baker {baker} finished baking bread";
             Action callback = () => BakeBread(baker);
 
-            ScheduleManager.instance.AddScheduleItem(ControlManager.instance.Times.BakingTime, startingMessage, endingMessage);
+            baker.taskId = ScheduleManager.instance.AddScheduleItem(ControlManager.instance.Times.BakingTime, callback, startingMessage, endingMessage);
         } else {
             //If not enough pollen to make bread, just keep checking every step
-            ScheduleManager.instance.AddScheduleItem(1, () => BakeBread(baker));
+            baker.state = BakerState.WaitingOnPollen;
+            baker.taskId = ScheduleManager.instance.AddScheduleItem(1, () => BakeBread(baker));
         }
     }
-
-
 }

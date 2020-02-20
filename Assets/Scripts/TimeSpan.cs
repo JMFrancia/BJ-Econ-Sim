@@ -49,7 +49,7 @@ public class TimeSpan
 
 
         if(hours >= 24) {
-            days += Mathf.FloorToInt(hours / 60);
+            days += Mathf.FloorToInt(hours / 24);
         }
         Hours = Mathf.Max(0, hours % 24);
 

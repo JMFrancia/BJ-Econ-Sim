@@ -3,6 +3,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Schedule manager is a priority queue of callback functions or event calls
+ * with assocciated completion messages, as well as IDs so that they can be
+ * removed / cancelled if necessary. Priority of items is determined by their
+ * estimated completion time. On each step, any items scheduled to complete are
+ * dequeued and activated.
+ */
 public class ScheduleManager : MonoBehaviour
 {
     public static ScheduleManager instance;
@@ -52,7 +59,7 @@ public class ScheduleManager : MonoBehaviour
         ScheduleItem item = new ScheduleItem(callback, scheduledStep, completionMessage);
         schedule.Enqueue(item, scheduledStep);
         itemDict[item.ID] = item;
-        if(startingMessage != null) {
+        if(!string.IsNullOrEmpty(startingMessage)) {
             LogManager.instance.AddToLog(startingMessage);
         }
         return item.ID;
@@ -112,7 +119,10 @@ public class ScheduleManager : MonoBehaviour
 
         public override void Activate()
         {
-            LogManager.instance.AddToLog(CompletionMessage);
+            if (!string.IsNullOrEmpty(CompletionMessage))
+            {
+                LogManager.instance.AddToLog(CompletionMessage);
+            }
             CallBack.Invoke();
         }
     }
@@ -146,8 +156,9 @@ public class ScheduleManager : MonoBehaviour
                 Route data = (Route)Convert.ChangeType(Data, typeof(Route));
                 EventManager.TriggerEvent(EventName, data);    
             }
-            if (CompletionMessage != null)
+            if (!string.IsNullOrEmpty(CompletionMessage))
             {
+                Debug.Log("Adding to log: " + CompletionMessage);
                 LogManager.instance.AddToLog(CompletionMessage);
             }
         }

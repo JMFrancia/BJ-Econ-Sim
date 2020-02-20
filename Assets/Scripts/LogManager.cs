@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/*
+ * LogManager's job is to combine and organize logs from the sim by step, 
+ * making them easier to read and record.
+ */
 public class LogManager : MonoBehaviour
 {
     public static LogManager instance;

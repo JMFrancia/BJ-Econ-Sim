@@ -10,6 +10,7 @@ public class RecordManager : MonoBehaviour
     const string WORKERS_LABEL = "Workers";
     const string NECTAR_LABEL = "Nectar";
     const string POLLEN_LABEL = "Pollen";
+    const string BREAD_LABEL = "Bread";
     const string FORAGERS_LABEL = "Foragers";
     const string FORAGING_CELLS_LABEL = "Foraging cells";
     const string FORAGING_FRAMES_LABEL = "Foraging Frames";
@@ -21,16 +22,18 @@ public class RecordManager : MonoBehaviour
         public int workers;
         public int nectar;
         public int pollen;
+        public int bread;
         public int foragers;
         public int foragingCells;
         public int foragingFrames;
         public string gameLog;
 
-        public Record(int step, int workers, int nectar, int pollen, int foragers, int foragingCells, int foragingFrames, string gameLog = "") {
+        public Record(int step, int workers, int nectar, int pollen, int bread, int foragers, int foragingCells, int foragingFrames, string gameLog = "") {
             this.step = step;
             this.workers = workers;
             this.nectar = nectar;
             this.pollen = pollen;
+            this.bread = bread;
             this.foragers = foragers;
             this.foragingCells = foragingCells;
             this.foragingFrames = foragingFrames;
@@ -44,6 +47,7 @@ public class RecordManager : MonoBehaviour
                 {WORKERS_LABEL, workers.ToString()},
                 {NECTAR_LABEL, nectar.ToString()},
                 {POLLEN_LABEL, pollen.ToString()},
+                {BREAD_LABEL, bread.ToString()},
                 {FORAGERS_LABEL, foragers.ToString()},
                 {FORAGING_CELLS_LABEL, foragingCells.ToString()},
                 {FORAGING_FRAMES_LABEL, foragingFrames.ToString()},
@@ -70,6 +74,7 @@ public class RecordManager : MonoBehaviour
             workers: ResourceManager.Workers,
             nectar: ResourceManager.Nectar,
             pollen: ResourceManager.Pollen,
+            bread: ResourceManager.Bread,
             foragers: JobManager.instance.ForagingCellManager.ActiveCells,
             foragingCells: JobManager.instance.ForagingCellManager.Cells,
             foragingFrames: JobManager.instance.ForagingFrameManager.Frames
@@ -91,9 +96,9 @@ public class RecordManager : MonoBehaviour
 
         if (vertical)
         {
-            totalRecord = $"{STEP_LABEL},{WORKERS_LABEL},{NECTAR_LABEL},{POLLEN_LABEL},{FORAGERS_LABEL},{FORAGING_CELLS_LABEL},{FORAGING_FRAMES_LABEL},{LOG_LABEL}\n";
+            totalRecord = $"{STEP_LABEL},{WORKERS_LABEL},{NECTAR_LABEL},{POLLEN_LABEL},{BREAD_LABEL},{FORAGERS_LABEL},{FORAGING_CELLS_LABEL},{FORAGING_FRAMES_LABEL},{LOG_LABEL}\n";
             foreach (Record r in AllRecords) {
-                totalRecord += $"{r.step},{r.workers},{r.nectar},{r.pollen},{r.foragers},{r.foragingCells},{r.foragingFrames},\"{r.gameLog}\"\n";
+                totalRecord += $"{r.step},{r.workers},{r.nectar},{r.pollen},{r.bread},{r.foragers},{r.foragingCells},{r.foragingFrames},\"{r.gameLog}\"\n";
             }
         }
         else
@@ -102,6 +107,7 @@ public class RecordManager : MonoBehaviour
             string workersRow = $"{WORKERS_LABEL},";
             string nectarRow = $"{NECTAR_LABEL},";
             string pollenRow = $"{POLLEN_LABEL},";
+            string breadRow = $"{BREAD_LABEL},";
             string foragersRow = $"{FORAGERS_LABEL},";
             string foragingCellsRow = $"{FORAGING_CELLS_LABEL},";
             string foragingFramesRow = $"{FORAGING_FRAMES_LABEL},";
@@ -114,13 +120,14 @@ public class RecordManager : MonoBehaviour
                 workersRow += $"{r.workers},";
                 nectarRow += $"{r.nectar},";
                 pollenRow += $"{r.pollen},";
+                breadRow += $"{r.bread},";
                 foragersRow += $"{r.foragers},";
                 foragingCellsRow += $"{r.foragingCells},";
                 foragingFramesRow += $"{r.foragingFrames},";
                 gameLogRow += $"{r.gameLog}";
             }
 
-            totalRecord = $"{stepRow}\n{workersRow}\n{nectarRow}\n{pollenRow}\n{foragersRow}\n{foragingCellsRow}\n{foragingFramesRow}\n{gameLogRow}";
+            totalRecord = $"{stepRow}\n{workersRow}\n{nectarRow}\n{pollenRow}\n{breadRow}\n{foragersRow}\n{foragingCellsRow}\n{foragingFramesRow}\n{gameLogRow}";
         }
 
 
