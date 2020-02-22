@@ -44,6 +44,10 @@ public class CellManager : MonoBehaviour
 
     public void UpdateDisplay()
     {
+        //Solves race condition where UpdateDisplay() called before Awake()
+        if(frame == null) {
+            frame = GetComponentInParent<FrameManager>();
+        }
         cellCountText.text = $"{ActiveCells} / {Cells} / {frame.Frames * cellsPerFrame}";
     }
 

@@ -13,14 +13,9 @@ public class BakeryManager : MonoBehaviour
 
     [Serializable]
     class Baker {
-        public BakerState state;
+        public BakerState state = BakerState.WaitingOnPollen;
         public int estTaskCompletion;
         public int taskId;
-
-        public Baker() {
-            state = BakerState.WaitingOnPollen;
-            estTaskCompletion = 99;
-        }
 
         public int CalcPriority() {
             return (state == BakerState.WaitingOnPollen) ? 0 : estTaskCompletion;
@@ -32,7 +27,6 @@ public class BakeryManager : MonoBehaviour
     [SerializeField] Button addBakerButton;
     [SerializeField] Button removeBakerButton;
 
-    CellManager bakeryCellManager;
     List<Baker> bakers = new List<Baker>();
 
     private void Awake()
@@ -54,10 +48,6 @@ public class BakeryManager : MonoBehaviour
 
     }
 
-    void OnAddBakerButtonPress() { }
-
-    void OnRemoveBakerButtonPress() { }
-
     void AddBaker() {
         if(JobManager.instance.BakeryCellManager.HasFreeCell() && 
            ResourceManager.instance.RemoveWorker()
@@ -72,7 +62,7 @@ public class BakeryManager : MonoBehaviour
     void RemoveBaker() {
         if (bakers.Count == 0)
             return;
-        List<Baker> sortedList = bakers.OrderByDescending(f => f.CalcPriority()).ToList();
+        List<Baker> sortedList = bakers.OrderByDescending(b => b.CalcPriority()).ToList();
 
         Baker baker = sortedList[0];
         ResourceManager.instance.AddWorker();

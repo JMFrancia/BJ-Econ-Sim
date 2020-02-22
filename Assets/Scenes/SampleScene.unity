@@ -1219,6 +1219,8 @@ MonoBehaviour:
     TravelTime: 2
     ForageTime: 5
     BakingTime: 5
+    EggLayTime: 3
+    NursingTime: 5
   _quantities:
     GatherRate: 3
     ForagingCellsPerFrame: 8
@@ -1226,6 +1228,7 @@ MonoBehaviour:
     NursingCellsPerFrame: 4
     PollenPerBread: 3
     BreadPerBake: 1
+    BreadPerBee: 1
   _routes:
     MaxDistance: 5
     MinResources: 20
@@ -2513,6 +2516,51 @@ Transform:
   m_Father: {fileID: 494147539}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &765351847
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 765351848}
+  - component: {fileID: 765351849}
+  m_Layer: 0
+  m_Name: Nursery Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &765351848
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765351847}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1342622931}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &765351849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 765351847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e9ef0efbd8684b1b976c0b76b85e314, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  addNurseButton: {fileID: 1077268614}
+  removeNurseButton: {fileID: 1129296724}
 --- !u!1 &783021525
 GameObject:
   m_ObjectHideFlags: 0
@@ -4727,6 +4775,7 @@ Transform:
   m_Children:
   - {fileID: 1448220753}
   - {fileID: 1828650840}
+  - {fileID: 765351848}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -25,7 +25,7 @@ public class JobManager : MonoBehaviour
         } 
     }
 
-    public CellManager NursingCelLManager
+    public CellManager NursingCellManager
     {
         get
         {

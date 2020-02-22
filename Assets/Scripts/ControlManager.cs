@@ -48,6 +48,8 @@ public class ControlManager : MonoBehaviour
         public int TravelTime = 2;
         public int ForageTime = 5;
         public int BakingTime = 5;
+        public int EggLayTime = 3;
+        public int NursingTime = 5;
     }
 
     [Serializable]
@@ -59,6 +61,7 @@ public class ControlManager : MonoBehaviour
         public int NursingCellsPerFrame = 4;
         public int PollenPerBread = 3;
         public int BreadPerBake = 1;
+        public int BreadPerBee = 1;
     }
 
     [Serializable]
