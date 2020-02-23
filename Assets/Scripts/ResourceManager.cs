@@ -31,15 +31,31 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
+    public static int Honey { 
+        get {
+            return _honey;
+        }
+    }
+
+    public static int Bucks { 
+        get {
+            return _bucks;
+        }
+    }
+
     static int _pollen = 0;
     static int _nectar = 0;
     static int _workers = 5;
     static int _bread = 0;
+    static int _honey = 0;
+    static int _bucks = 0;
 
     [SerializeField] Text pollenText;
     [SerializeField] Text workersText;
     [SerializeField] Text nectarText;
     [SerializeField] Text breadText;
+    [SerializeField] Text honeyText;
+    [SerializeField] Text bucksText;
 
     private void Awake()
     {
@@ -49,14 +65,17 @@ public class ResourceManager : MonoBehaviour
         pollenText.text = _pollen.ToString();
         nectarText.text = _nectar.ToString();
         breadText.text = _bread.ToString();
+        honeyText.text = _honey.ToString();
+        bucksText.text = _bucks.ToString();
     }
 
-    public void Initialize(int pollen, int nectar, int workers, int bread)
+    public void Initialize(int workers, int bucks, int nectar, int pollen, int bread, int honey)
     {
         _pollen = pollen;
         _nectar = nectar;
         _workers = workers;
         _bread = bread;
+        _honey = honey;
     }
 
     public bool RemoveWorker()
@@ -78,6 +97,15 @@ public class ResourceManager : MonoBehaviour
         return RemoveResource(ref _bread, amt, breadText);
     }
 
+    public bool RemoveHoney(int amt) {
+        return RemoveResource(ref _honey, amt, honeyText);
+    }
+
+    public bool RemoveBucks(int amt)
+    {
+        return RemoveResource(ref _bucks, amt, bucksText);
+    }
+
     public int AddWorker() {
         return AddResource(ref _workers, 1, workersText);
     }
@@ -92,6 +120,14 @@ public class ResourceManager : MonoBehaviour
 
     public int AddBread(int amt) {
         return AddResource(ref _bread, amt, breadText);
+    }
+
+    public int AddHoney(int amt) {
+        return AddResource(ref _honey, amt, honeyText);
+    }
+
+    public int AddBucks(int amt) {
+        return AddResource(ref _bucks, amt, bucksText);
     }
 
     bool RemoveResource(ref int res, int amt, Text resText) {
