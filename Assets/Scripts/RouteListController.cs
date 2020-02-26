@@ -1,26 +1,10 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class RouteListController : MonoBehaviour
 {
-
-    //TO-DO refactor flower data as structs, centralized in DataController, containing relevant info
-    readonly string[] FLOWER_NAMES = new string[] {
-        "Rose",
-        "Aster",
-        "Daisy",
-        "Lilac",
-        "Cherry-Blossom",
-        "Sunflower",
-        "Violet",
-        "Lily",
-        "Poppy",
-        "Appricot",
-        "Apple",
-        "Walnut"
-    };
 
     [SerializeField] GameObject RouteListEntryPrefab;
     [SerializeField] Button AddRouteButton;
@@ -29,6 +13,15 @@ public class RouteListController : MonoBehaviour
     int maxResources;
     int maxRange;
     int routesPerForagingFrame;
+
+    enum FlowerTypeNames { 
+        Common,
+        Seasonal,
+        Rare,
+        Unique
+    }
+
+    Dictionary<FlowerTypeNames, FlowerType> flowerTypeDict;
 
     private void Awake()
     {
@@ -39,6 +32,13 @@ public class RouteListController : MonoBehaviour
 
         AddRouteButton.onClick.RemoveListener(AddRoute);
         AddRouteButton.onClick.AddListener(AddRoute);
+
+        flowerTypeDict = new Dictionary<FlowerTypeNames, FlowerType>() {
+            { FlowerTypeNames.Common, ControlManager.instance.FlowerData.CommonFlower },
+            { FlowerTypeNames.Seasonal, ControlManager.instance.FlowerData.RareFlower },
+            { FlowerTypeNames.Rare, ControlManager.instance.FlowerData.SeasonalFlower },
+            { FlowerTypeNames.Unique, ControlManager.instance.FlowerData.UniqueFlower }
+        };
     }
 
     void AddRoute() {
@@ -52,13 +52,24 @@ public class RouteListController : MonoBehaviour
         );
     }
 
+    /*
+    Route GenerateRoute(int zone) {
+//        FlowerType type = flowerTypeDict[typeName];
+        //return new Route(
+        //    name: type.Names[Random.Range(0, type.Names.Count - 1)],
+        //    rarity: 0,
+
+        //);
+    }
+    */
+
     Route GenerateRandomRoute() {
         return new Route(
-            name: FLOWER_NAMES[Random.Range(0, FLOWER_NAMES.Length)],
-            rarity: Random.Range(1, 5),
-            distance: Random.Range(1, maxRange + 1),
-            resources: Random.Range(minResources / 10, (maxResources + 1) / 10) * 10,
-            workerCapacity: Random.Range(1, 6)
+            name: "Random Flower",
+            rarity: UnityEngine.Random.Range(1, 5),
+            distance: UnityEngine.Random.Range(1, maxRange + 1),
+            resources: UnityEngine.Random.Range(minResources / 10, (maxResources + 1) / 10) * 10,
+            workerCapacity: UnityEngine.Random.Range(1, 6)
         );
     }
 

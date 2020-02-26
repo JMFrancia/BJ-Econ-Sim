@@ -1,22 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using System;
-
-[Serializable]
-public struct IntRange
-{
-    public int min;
-    public int max;
-
-    public IntRange(int min, int max)
-    {
-        if(max < min) {
-            max = min + 1;
-        }
-        this.min = min;
-        this.max = max;
-    }
-}
 
 public class ControlManager : MonoBehaviour
 {
@@ -30,7 +14,7 @@ public class ControlManager : MonoBehaviour
     public QuantityControls Quantities { get { return _quantities; } }
     public RouteControls Routes { get { return _routes; } }
     public StartingControls StartingValues { get { return _start; } }
-    public FlowerControls FlowerSettings { get { return _flowers; } }
+    public FlowerControls FlowerData { get { return _flowers; } }
 
     [SerializeField] TimeControls _times;
     [SerializeField] QuantityControls _quantities;
@@ -96,38 +80,55 @@ public class ControlManager : MonoBehaviour
     [Serializable]
     public class FlowerControls
     {
-        [Serializable]
-        public struct RaritySettings {
-            public int MinZone;
-            public IntRange Resources;
-            public IntRange Size;
-
-            public RaritySettings(int minZone, IntRange resources, IntRange size) {
-                MinZone = minZone;
-                Resources = resources;
-                Size = size;
-            }
-        }
-
-        public RaritySettings CommonFlower = new RaritySettings(
+        public FlowerType CommonFlower = new FlowerType(
             minZone: 1,
             resources: new IntRange(3, 5),
-            size: new IntRange(3, 5)
+            size: new IntRange(3, 5),
+            names: new List<string>() {
+                "Lily",
+                "Poppy",
+                "Daisy"
+            }
         );
-        public RaritySettings SeasonalFlower = new RaritySettings(
+        public FlowerType SeasonalFlower = new FlowerType(
             minZone: 1,
             resources: new IntRange(2, 4),
-            size: new IntRange(2, 5)
+            size: new IntRange(2, 5),
+            names: new List<string>{
+                "Apricot",
+                "Apple",
+                "Walnut"
+            }
         );
-        public RaritySettings RareFlower = new RaritySettings(
+        public FlowerType RareFlower = new FlowerType(
             minZone: 2,
             resources: new IntRange(2, 4),
-            size: new IntRange(1, 4)
+            size: new IntRange(1, 4),
+            names: new List<string>{
+                "Cherry-Blossom",
+                "Rose",
+                "Sunflower"
+            }
         );
-        public RaritySettings UniqueFlower = new RaritySettings(
+        public FlowerType UniqueFlower = new FlowerType(
             minZone: 4,
             resources: new IntRange(1, 3),
-            size: new IntRange(1, 3)
+            size: new IntRange(1, 3),
+            names: new List<string>{
+                "Aster",
+                "Orchid",
+                "Chocolate Cosmos"
+            }
         );
+
+
+        //public List<ObjectPool<FlowerType>> ZoneData = new List<ObjectPool<FlowerType>>() {
+        //    new ObjectPool<FlowerType>(
+        //        new Dictionary<FlowerType, int>() {
+        //            {FlowerType}
+
+        //        }
+        //    )
+        ////}
     }
 }
