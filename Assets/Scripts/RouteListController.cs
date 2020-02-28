@@ -9,6 +9,8 @@ public class RouteListController : MonoBehaviour
     [SerializeField] GameObject RouteListEntryPrefab;
     [SerializeField] Button AddRouteButton;
 
+    List<Pool<FlowerType>> zones;
+
     int minResources;
     int maxResources;
     int maxRange;
@@ -21,7 +23,7 @@ public class RouteListController : MonoBehaviour
         Unique
     }
 
-    Dictionary<FlowerTypeNames, FlowerType> flowerTypeDict;
+    Dictionary<FlowerTypeNames, FlowerData> flowerTypeDict;
 
     private void Awake()
     {
@@ -32,13 +34,21 @@ public class RouteListController : MonoBehaviour
 
         AddRouteButton.onClick.RemoveListener(AddRoute);
         AddRouteButton.onClick.AddListener(AddRoute);
-
-        flowerTypeDict = new Dictionary<FlowerTypeNames, FlowerType>() {
+        /*
+        flowerTypeDict = new Dictionary<FlowerTypeNames, FlowerData>() {
             { FlowerTypeNames.Common, ControlManager.instance.FlowerData.CommonFlower },
             { FlowerTypeNames.Seasonal, ControlManager.instance.FlowerData.RareFlower },
             { FlowerTypeNames.Rare, ControlManager.instance.FlowerData.SeasonalFlower },
             { FlowerTypeNames.Unique, ControlManager.instance.FlowerData.UniqueFlower }
         };
+        */
+
+        zones = new List<Pool<FlowerType>>();
+        ControlManager.instance.MapData.ZoneData.ForEach(zone => {
+            zones.Add(
+                new Pool<FlowerType>(zone.Weights)
+           );
+        });
     }
 
     void AddRoute() {
@@ -52,16 +62,22 @@ public class RouteListController : MonoBehaviour
         );
     }
 
-    /*
-    Route GenerateRoute(int zone) {
-//        FlowerType type = flowerTypeDict[typeName];
-        //return new Route(
-        //    name: type.Names[Random.Range(0, type.Names.Count - 1)],
-        //    rarity: 0,
-
-        //);
+    Route GenerateRoute(int zone) { 
+        if(zone < 0 || zone > zones.Count) {
+            Debug.LogError($"Attempting to get invalid zone # {zone}, only {zones.Count} available");
+            return null;
+        }
+        FlowerType type = zones[zone].Get();
+        FlowerData data = ControlManager.instance.MapData.FlowerTypeData[type];
+        
+        return new Route(
+            name: data.Names[UnityEngine.Random.Range(0, data.Names.Count - 1)],
+            rarity: (int) type,
+            distance: zone + 1,
+            resources: UnityEngine.Random.Range(data.Resources.min, data.Resources.max),
+            workerCapacity: UnityEngine.Random.Range(data.Size.min, data.Size.max)
+        );
     }
-    */
 
     Route GenerateRandomRoute() {
         return new Route(
