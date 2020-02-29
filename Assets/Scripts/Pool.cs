@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/*
+ * Pool is a generic-classed data structure
+ * As input, it is given a set of T, with associated integer weights for each member.
+ * As output, Pool will randomly return a member of the set, with probability 
+ * based on its weight (out of sum of all weights).
+ */
+
 public class Pool<T> : MonoBehaviour
 {
     [Serializable]
@@ -16,15 +23,17 @@ public class Pool<T> : MonoBehaviour
         }
     }
 
-    public bool removeOnGet = true;
-    List<Poolable<T>> pList = new List<Poolable<T>>();
+    /* If true, will remove a member upon its return from Get() */
+    public bool RemoveOnGet = false;
 
+    /*
+     * pool is list of all pIds
+     */
+    List<int> pool = new List<int>();
+    List<Poolable<T>> pList = new List<Poolable<T>>();
     Dictionary<int, Poolable<T>> poolableDict = new Dictionary<int, Poolable<T>>();
 
     int poolableIdCounter = 0;
-
-    List<int> pool = new List<int>();
-    int top = 0;
 
     public Pool(Dictionary<T, int> items = null) {
         if(items != null) {
@@ -42,7 +51,6 @@ public class Pool<T> : MonoBehaviour
     }
 
     void Add(T item, int weight, bool newPoolable) {
-
         Poolable<T> p = new Poolable<T>(item, weight);
 
         if (newPoolable) {
@@ -69,17 +77,24 @@ public class Pool<T> : MonoBehaviour
         foreach(T key in items.Keys) {
             Add(key, items[key]);
         }
+        TryOptimizeSize();
     }
 
     public T Get() {
         int pId = pool[UnityEngine.Random.Range(0, pool.Count)];
         T result = poolableDict[pId].item;
-        if (removeOnGet) {
+        if (RemoveOnGet) {
             Remove(pId, poolableDict[pId].weight);
         }
         return result;
     }
 
+    /*
+     * Removes all instances of poolable from pool. 
+     * I thought I could use weight to make efficient using RemoveRange,
+     * but apparently it operates in O(N) time anyway, so might as well just
+     * provide pId alone and do manually    
+     */
     public void Remove(int pId, int weight)
     {
         int start = 0;
@@ -92,6 +107,43 @@ public class Pool<T> : MonoBehaviour
         pool.RemoveRange(start, weight);
         pList.Remove(poolableDict[pId]);
         poolableDict.Remove(pId);
+    }
+
+    /* 
+     * Attempt to optimize pool size by dividing all poolable weights by their
+     * greatest common denomenator
+     */
+    void TryOptimizeSize() {
+        if (pList.Count < 2)
+            return;
+        int gcd = EuclidGCDByMod(pList[0].weight, pList[1].weight);
+        if(gcd > 1) {
+            for(int n = 2; n < pList.Count; n++) { 
+                if(pList[n].weight % gcd != 0) {
+                    return;
+                }
+            }
+            pool.Clear();
+            pList.ForEach(poolable => {
+                poolable.weight /= gcd;
+                Add(poolable);
+            };
+        }
+    }
+
+    /*
+     * Euclid's GCD algorithm, modified to save time using modulus   
+     */   
+    public int EuclidGCDByMod(int value1, int value2)
+    {
+        while (value1 != 0 && value2 != 0)
+        {
+            if (value1 > value2)
+                value1 %= value2;
+            else
+                value2 %= value1;
+        }
+        return Math.Max(value1, value2);
     }
 
     /*
