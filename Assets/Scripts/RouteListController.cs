@@ -34,14 +34,6 @@ public class RouteListController : MonoBehaviour
 
         AddRouteButton.onClick.RemoveListener(AddRoute);
         AddRouteButton.onClick.AddListener(AddRoute);
-        /*
-        flowerTypeDict = new Dictionary<FlowerTypeNames, FlowerData>() {
-            { FlowerTypeNames.Common, ControlManager.instance.FlowerData.CommonFlower },
-            { FlowerTypeNames.Seasonal, ControlManager.instance.FlowerData.RareFlower },
-            { FlowerTypeNames.Rare, ControlManager.instance.FlowerData.SeasonalFlower },
-            { FlowerTypeNames.Unique, ControlManager.instance.FlowerData.UniqueFlower }
-        };
-        */
 
         zones = new List<Pool<FlowerType>>();
         ControlManager.instance.MapData.ZoneData.ForEach(zone => {

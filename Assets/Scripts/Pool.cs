@@ -80,7 +80,14 @@ public class Pool<T> : MonoBehaviour
         TryOptimizeSize();
     }
 
+    /*
+     * Returns a T member randomly based on its weight 
+     */
     public T Get() {
+        if(pool.Count == 0) {
+            Debug.LogError("Trying to Get() from empty pool");
+            return default(T);
+        }
         int pId = pool[UnityEngine.Random.Range(0, pool.Count)];
         T result = poolableDict[pId].item;
         if (RemoveOnGet) {
@@ -116,8 +123,14 @@ public class Pool<T> : MonoBehaviour
     void TryOptimizeSize() {
         if (pList.Count < 2)
             return;
-        int gcd = EuclidGCDByMod(pList[0].weight, pList[1].weight);
+
+        //Get GCD of 2 smallest member weights
+        List<Poolable<T>> sorted = new List<Poolable<T>>(pList);
+        sorted.Sort((p1, p2) => p1.weight.CompareTo(p2.weight));
+        int gcd = EuclidGCDByMod(sorted[0].weight, sorted[1].weight);
+
         if(gcd > 1) {
+            //if all member weights divisible by GCD, can optimize size by doing so and re-creating pool
             for(int n = 2; n < pList.Count; n++) { 
                 if(pList[n].weight % gcd != 0) {
                     return;
@@ -127,7 +140,7 @@ public class Pool<T> : MonoBehaviour
             pList.ForEach(poolable => {
                 poolable.weight /= gcd;
                 Add(poolable);
-            };
+            });
         }
     }
 

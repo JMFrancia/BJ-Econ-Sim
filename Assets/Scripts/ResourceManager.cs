@@ -31,9 +31,41 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    public static int Honey { 
+    public static int CommonHoney { 
         get {
-            return _honey;
+            return instance.honeyManager.Amount(FlowerType.Common);
+        }
+    }
+
+    public static int SeasonalHoney
+    {
+        get
+        {
+            return instance.honeyManager.Amount(FlowerType.Seasonal);
+        }
+    }
+
+    public static int RareHoney
+    {
+        get
+        {
+            return instance.honeyManager.Amount(FlowerType.Rare);
+        }
+    }
+
+    public static int UniqueHoney
+    {
+        get
+        {
+            return instance.honeyManager.Amount(FlowerType.Unique);
+        }
+    }
+
+    public static int TotalHoney
+    {
+        get
+        {
+            return instance.honeyManager.Total();
         }
     }
 
@@ -47,14 +79,13 @@ public class ResourceManager : MonoBehaviour
     static int _nectar = 0;
     static int _workers = 5;
     static int _bread = 0;
-    static int _honey = 0;
     static int _bucks = 0;
 
+    [SerializeField] HoneyManager honeyManager;
     [SerializeField] Text pollenText;
     [SerializeField] Text workersText;
     [SerializeField] Text nectarText;
     [SerializeField] Text breadText;
-    [SerializeField] Text honeyText;
     [SerializeField] Text bucksText;
 
     private void Awake()
@@ -65,7 +96,6 @@ public class ResourceManager : MonoBehaviour
         pollenText.text = _pollen.ToString();
         nectarText.text = _nectar.ToString();
         breadText.text = _bread.ToString();
-        honeyText.text = _honey.ToString();
         bucksText.text = _bucks.ToString();
     }
 
@@ -75,7 +105,6 @@ public class ResourceManager : MonoBehaviour
         _nectar = nectar;
         _workers = workers;
         _bread = bread;
-        _honey = honey;
     }
 
     public bool RemoveWorker()
@@ -92,13 +121,13 @@ public class ResourceManager : MonoBehaviour
     {
         return RemoveResource(ref _pollen, amt, pollenText);
     }
-
+                                            
     public bool RemoveBread(int amt) {
         return RemoveResource(ref _bread, amt, breadText);
     }
 
-    public bool RemoveHoney(int amt) {
-        return RemoveResource(ref _honey, amt, honeyText);
+    public bool RemoveHoney(FlowerType type, int amt) {
+        return honeyManager.Remove(type, amt);
     }
 
     public bool RemoveBucks(int amt)
@@ -122,8 +151,8 @@ public class ResourceManager : MonoBehaviour
         return AddResource(ref _bread, amt, breadText);
     }
 
-    public int AddHoney(int amt) {
-        return AddResource(ref _honey, amt, honeyText);
+    public int AddHoney(FlowerType type, int amt) {
+        return honeyManager.Add(type, amt);
     }
 
     public int AddBucks(int amt) {
