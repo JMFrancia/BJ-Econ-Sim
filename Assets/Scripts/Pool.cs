@@ -138,7 +138,7 @@ public class Pool<T> : MonoBehaviour
 
         if(gcd > 1) {
             //if all member weights divisible by a GCD > 1, can optimize size by doing so and re-creating pool
-            for(int n = 2; n < pList.Count; n++) { 
+            for(int n = 1; n < pList.Count; n++) { 
                 if(pList[n].weight % gcd != 0) {
                     return;
                 }
