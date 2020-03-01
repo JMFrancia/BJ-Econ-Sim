@@ -9,6 +9,7 @@ public class HoneytoriumManager : MonoBehaviour
     [Serializable]
     class HoneyMaker {
         public bool waitingOnNectar = true;
+        public FlowerType honeyType;
         public int estTaskCompletion;
         public int taskId;
 
@@ -45,7 +46,7 @@ public class HoneytoriumManager : MonoBehaviour
     void AddHoneyMaker() {
         if(JobManager.instance.HoneyCellManager.HasFreeCell() &&
             ResourceManager.instance.RemoveWorker()) {
-            JobManager.instance.NursingCellManager.ActivateCell();
+            JobManager.instance.HoneyCellManager.ActivateCell();
             HoneyMaker honeyMaker = new HoneyMaker();
             honeyMakers.Add(honeyMaker);
             MakeHoney(honeyMaker);
@@ -58,15 +59,38 @@ public class HoneytoriumManager : MonoBehaviour
         List<HoneyMaker> sortedList = honeyMakers.OrderByDescending(n => n.CalcPriority()).ToList();
         HoneyMaker maker = sortedList[0];
         ResourceManager.instance.AddWorker();
-        JobManager.instance.NursingCellManager.DeactivateCell();
+        JobManager.instance.HoneyCellManager.DeactivateCell();
         ScheduleManager.instance.RemoveScheduleItem(maker.taskId);
         honeyMakers.Remove(maker);
     }
 
-    //Need to create honey order system to continue
-    void MakeHoney(HoneyMaker maker) { 
-        if(maker.waitingOnNectar) { 
-           // if(ResourceManager.)
+    //Some edge case happening here that's either preventing
+    //Honey from being made after a certain point, or just not reflecting it correctly
+    //Update ControlManager.StartingControls to simplify testing
+    void MakeHoney(HoneyMaker maker) {
+        if(!maker.waitingOnNectar) {
+            //Assume just finished making honey
+            ResourceManager.instance.AddHoney(maker.honeyType, ControlManager.instance.Quantities.HoneyPerMake);
+        }
+        //Prioritize rarest nectars first
+        FlowerType[] types = (FlowerType[])Enum.GetValues(typeof(FlowerType));
+        maker.waitingOnNectar = true;
+        for(int n = types.Length -1; n >= 0; n--) { 
+            if(ResourceManager.instance.RemoveNectar(types[n], ControlManager.instance.Quantities.NectarPerHoney)) {
+                maker.waitingOnNectar = false;
+                maker.honeyType = types[n];
+                maker.estTaskCompletion = ControlManager.instance.Times.HoneyMakingTime + StepController.StepNumber;
+                string startingMessage = $"HoneyMaker {maker} beginning on {types[n]} honey. Est. completion: {maker.estTaskCompletion}";
+                string endingMessage = $"HoneyMaker {maker} completed making {types[n]} honey.";
+                Action callback = () => MakeHoney(maker);
+
+                maker.taskId = ScheduleManager.instance.AddScheduleItem(ControlManager.instance.Times.HoneyMakingTime, callback, startingMessage, endingMessage);
+                break;
+            }
+        }
+        //If waiting on Nectar, check every step until it's available
+        if(maker.waitingOnNectar) {
+            maker.taskId = ScheduleManager.instance.AddScheduleItem(1, () => MakeHoney(maker));
         }
     }
 }

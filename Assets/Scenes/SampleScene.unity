@@ -1605,6 +1605,7 @@ MonoBehaviour:
     BakingTime: 5
     EggLayTime: 3
     NursingTime: 5
+    HoneyMakingTime: 5
   _quantities:
     GatherRate: 3
     ForagingCellsPerFrame: 8
@@ -1613,6 +1614,8 @@ MonoBehaviour:
     PollenPerBread: 3
     BreadPerBake: 1
     BreadPerBee: 1
+    NectarPerHoney: 1
+    HoneyPerMake: 1
   _routes:
     MaxDistance: 5
     MinResources: 20
@@ -1896,9 +1899,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   foragingFrameManager: {fileID: 1184612017}
   nursingFrameManager: {fileID: 559378696}
+  honeyFrameManager: {fileID: 862863799}
   foragingCellManager: {fileID: 555299408}
   nursingCellManager: {fileID: 627413059}
   bakeryCellManager: {fileID: 1966429966}
+  honeyCellManager: {fileID: 1662646392}
 --- !u!1 &356443751
 GameObject:
   m_ObjectHideFlags: 0
@@ -4789,7 +4794,6 @@ MonoBehaviour:
   frameAddButton: {fileID: 823430971}
   cellsManagers:
   - {fileID: 1662646392}
-  - {fileID: 0}
 --- !u!1 &907181965
 GameObject:
   m_ObjectHideFlags: 0
@@ -5456,6 +5460,51 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1053847803
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1053847804}
+  - component: {fileID: 1053847805}
+  m_Layer: 0
+  m_Name: Honeytorium Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1053847804
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053847803}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1342622931}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1053847805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053847803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69af15b9981ba46fbb194e474b2c3a13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  addHoneyMakerButton: {fileID: 1563760711}
+  removeHoneyMakerButton: {fileID: 573546326}
 --- !u!1 &1077268612
 GameObject:
   m_ObjectHideFlags: 0
@@ -7042,6 +7091,7 @@ Transform:
   - {fileID: 1448220753}
   - {fileID: 1828650840}
   - {fileID: 765351848}
+  - {fileID: 1053847804}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7311,13 +7361,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbafd65d583464d4ab2e57b92e833d79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  honeyManager: {fileID: 0}
-  nectarManager: {fileID: 0}
+  honeyManager: {fileID: 134588463}
+  nectarManager: {fileID: 557260598}
   pollenText: {fileID: 1794683299}
   workersText: {fileID: 24259976}
-  nectarText: {fileID: 0}
   breadText: {fileID: 1541414115}
-  bucksText: {fileID: 0}
+  bucksText: {fileID: 249194781}
 --- !u!1 &1387839885
 GameObject:
   m_ObjectHideFlags: 0
