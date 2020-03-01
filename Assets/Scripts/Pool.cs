@@ -26,6 +26,9 @@ public class Pool<T> : MonoBehaviour
     /* If true, will remove a member upon its return from Get() */
     public bool RemoveOnGet = false;
 
+    /* If true, will run TryOptimizeSize() on each bulk add or remove. */
+    public bool OptimizeSize = true;
+
     /*
      * pool is list of all pIds
      */
@@ -77,7 +80,8 @@ public class Pool<T> : MonoBehaviour
         foreach(T key in items.Keys) {
             Add(key, items[key]);
         }
-        TryOptimizeSize();
+        if(OptimizeSize)
+            TryOptimizeSize();
     }
 
     /*
@@ -114,7 +118,8 @@ public class Pool<T> : MonoBehaviour
         pool.RemoveRange(start, weight);
         pList.Remove(poolableDict[pId]);
         poolableDict.Remove(pId);
-        TryOptimizeSize();
+        if(OptimizeSize)
+            TryOptimizeSize();
     }
 
     /* 
