@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ResourceManager : MonoBehaviour
@@ -15,7 +16,7 @@ public class ResourceManager : MonoBehaviour
 
     public static int Nectar {
         get {
-            return _nectar;
+            return instance.nectarManager.Total();
         }
     }
 
@@ -28,6 +29,32 @@ public class ResourceManager : MonoBehaviour
     public static int Bread { 
         get {
             return _bread;
+        }
+    }
+
+    public static int CommonNectar { 
+        get {
+            return instance.nectarManager.Amount(FlowerType.Common);
+        }
+    }
+
+    public static int SeasonalNectar {
+        get {
+            return instance.nectarManager.Amount(FlowerType.Seasonal);
+        }
+    }
+
+    public static int RareNectar {
+        get
+        {
+            return instance.nectarManager.Amount(FlowerType.Rare);
+        }
+    }
+
+    public static int UniqueNectar {
+        get
+        {
+            return instance.nectarManager.Amount(FlowerType.Unique);
         }
     }
 
@@ -76,15 +103,14 @@ public class ResourceManager : MonoBehaviour
     }
 
     static int _pollen = 0;
-    static int _nectar = 0;
     static int _workers = 5;
     static int _bread = 0;
     static int _bucks = 0;
 
-    [SerializeField] HoneyManager honeyManager;
+    [SerializeField] NectarHoneyManager honeyManager;
+    [SerializeField] NectarHoneyManager nectarManager;
     [SerializeField] Text pollenText;
     [SerializeField] Text workersText;
-    [SerializeField] Text nectarText;
     [SerializeField] Text breadText;
     [SerializeField] Text bucksText;
 
@@ -94,17 +120,17 @@ public class ResourceManager : MonoBehaviour
 
         workersText.text = _workers.ToString();
         pollenText.text = _pollen.ToString();
-        nectarText.text = _nectar.ToString();
         breadText.text = _bread.ToString();
         bucksText.text = _bucks.ToString();
     }
 
-    public void Initialize(int workers, int bucks, int nectar, int pollen, int bread, int honey)
+    public void Initialize(int workers, int bucks, int pollen, int bread, Dictionary<FlowerType, int> nectar, Dictionary<FlowerType, int> honey)
     {
         _pollen = pollen;
-        _nectar = nectar;
         _workers = workers;
         _bread = bread;
+        nectarManager.Initialize(nectar);
+        honeyManager.Initialize(honey);
     }
 
     public bool RemoveWorker()
@@ -112,9 +138,9 @@ public class ResourceManager : MonoBehaviour
         return RemoveResource(ref _workers, 1, workersText);
     }
 
-    public bool RemoveNectar(int amt)
+    public bool RemoveNectar(FlowerType type, int amt)
     {
-        return RemoveResource(ref _nectar, amt, nectarText);
+        return nectarManager.Remove(type, amt);
     }
 
     public bool RemovePollen(int amt)
@@ -139,8 +165,8 @@ public class ResourceManager : MonoBehaviour
         return AddResource(ref _workers, 1, workersText);
     }
 
-    public int AddNectar(int amt) {
-        return AddResource(ref _nectar, amt, nectarText);
+    public int AddNectar(FlowerType type, int amt) {
+        return nectarManager.Add(type, amt);
     }
 
     public int AddPollen(int amt) {

@@ -3,19 +3,19 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 
-public class HoneyManager : MonoBehaviour
+public class NectarHoneyManager : MonoBehaviour
 {
-    static Dictionary<FlowerType, int> honeyDict = new Dictionary<FlowerType, int> {
+    static Dictionary<FlowerType, int> honeyDict = new Dictionary<FlowerType, int>(){
         {FlowerType.Common, 0},
         {FlowerType.Seasonal, 0},
         {FlowerType.Rare, 0},
         {FlowerType.Unique, 0}
     };
 
-    [SerializeField] Text commonHoneyText;
-    [SerializeField] Text seasonalHoneyText;
-    [SerializeField] Text rareHoneyText;
-    [SerializeField] Text uniqueHoneyText;
+    [SerializeField] Text commonText;
+    [SerializeField] Text seasonalText;
+    [SerializeField] Text rareText;
+    [SerializeField] Text uniqueText;
     [SerializeField] Text totalText;
 
     private void Awake()
@@ -53,26 +53,26 @@ public class HoneyManager : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        commonHoneyText.text = honeyDict[FlowerType.Common].ToString();
-        seasonalHoneyText.text = honeyDict[FlowerType.Seasonal].ToString();
-        rareHoneyText.text = honeyDict[FlowerType.Rare].ToString();
-        uniqueHoneyText.text = honeyDict[FlowerType.Unique].ToString();
+        commonText.text = honeyDict[FlowerType.Common].ToString();
+        seasonalText.text = honeyDict[FlowerType.Seasonal].ToString();
+        rareText.text = honeyDict[FlowerType.Rare].ToString();
+        uniqueText.text = honeyDict[FlowerType.Unique].ToString();
         UpdateTotalDisplay();
     }
 
     void UpdateDisplay(FlowerType type) {
         switch(type) {
             case FlowerType.Common:
-                commonHoneyText.text = honeyDict[FlowerType.Common].ToString();
+                commonText.text = honeyDict[FlowerType.Common].ToString();
                 break;
             case FlowerType.Seasonal:
-                seasonalHoneyText.text = honeyDict[FlowerType.Seasonal].ToString();
+                seasonalText.text = honeyDict[FlowerType.Seasonal].ToString();
                 break;
             case FlowerType.Rare:
-                rareHoneyText.text = honeyDict[FlowerType.Rare].ToString();
+                rareText.text = honeyDict[FlowerType.Rare].ToString();
                 break;
             case FlowerType.Unique:
-                uniqueHoneyText.text = honeyDict[FlowerType.Unique].ToString();
+                uniqueText.text = honeyDict[FlowerType.Unique].ToString();
                 break;
         }
         UpdateTotalDisplay();

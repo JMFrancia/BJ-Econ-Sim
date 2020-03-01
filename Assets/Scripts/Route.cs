@@ -6,7 +6,7 @@ using System;
 public class Route
 {
     public string Name { get; private set; }
-    public int Rarity { get; private set; }
+    public FlowerType Type { get; private set; }
     public int Distance { get; private set; }
     public int Resources { get; private set; }
     public int WorkersAssigned { get; private set; }
@@ -16,9 +16,9 @@ public class Route
 
     public Action OnChange;
 
-    public Route(string name, int rarity, int distance, int resources, int workerCapacity) {
+    public Route(string name, FlowerType type, int distance, int resources, int workerCapacity) {
         Name = name;
-        Rarity = rarity;
+        Type = type;
         Distance = distance;
         Resources = resources;
         WorkerCapacity = workerCapacity;

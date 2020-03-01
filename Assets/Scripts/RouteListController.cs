@@ -64,21 +64,15 @@ public class RouteListController : MonoBehaviour
         
         return new Route(
             name: data.Names[UnityEngine.Random.Range(0, data.Names.Count - 1)],
-            rarity: (int) type,
+            type: type,
             distance: zone + 1,
-            resources: UnityEngine.Random.Range(data.Resources.min, data.Resources.max),
+            resources: UnityEngine.Random.Range(data.Resources.min, data.Resources.max) * 10,
             workerCapacity: UnityEngine.Random.Range(data.Size.min, data.Size.max)
         );
     }
 
     Route GenerateRandomRoute() {
-        return new Route(
-            name: "Random Flower",
-            rarity: UnityEngine.Random.Range(1, 5),
-            distance: UnityEngine.Random.Range(1, maxRange + 1),
-            resources: UnityEngine.Random.Range(minResources / 10, (maxResources + 1) / 10) * 10,
-            workerCapacity: UnityEngine.Random.Range(1, 6)
-        );
+        return GenerateRoute(UnityEngine.Random.Range(0, ControlManager.instance.MapData.ZoneData.Count - 1));
     }
 
 }

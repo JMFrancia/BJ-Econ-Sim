@@ -20,7 +20,7 @@ public class RouteListEntry : MonoBehaviour
 
         Route = route;
         distanceText.text = route.Distance.ToString();
-        rarityText.text = route.Rarity.ToString();
+        rarityText.text = route.Type.ToString();
 
         Route.OnChange -= OnRouteChange;
         Route.OnChange += OnRouteChange;

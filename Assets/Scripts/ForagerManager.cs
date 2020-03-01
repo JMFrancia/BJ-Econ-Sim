@@ -14,6 +14,9 @@ public class ForagerManager : SerializedMonoBehaviour
 
     [Serializable]
     class Forager {
+        static int foragerCounter = 0;
+
+        public int ID = 0;
         public ForagerState state;
         public int resources;
         public int estTaskCompletion;
@@ -21,6 +24,7 @@ public class ForagerManager : SerializedMonoBehaviour
         public Route Route { get; private set; }
 
         public Forager(Route r) {
+            ID = foragerCounter++;
             Route = r;
             resources = 0;
             state = ForagerState.TravelingToFlower;
@@ -43,6 +47,10 @@ public class ForagerManager : SerializedMonoBehaviour
                     break;
             }
             return stagePriority + estTaskCompletion;
+        }
+
+        public override string ToString() {
+            return ID.ToString();
         }
     }
 
@@ -197,7 +205,7 @@ public class ForagerManager : SerializedMonoBehaviour
     }
 
     void ReturnToHive(Forager forager) {
-        ResourceManager.instance.AddNectar(forager.resources);
+        ResourceManager.instance.AddNectar(forager.Route.Type, forager.resources);
         ResourceManager.instance.AddPollen(forager.resources);
 
         if(forager.Route.Depleted) {
