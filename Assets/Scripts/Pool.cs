@@ -125,13 +125,19 @@ public class Pool<T> : MonoBehaviour
         if (pList.Count < 2)
             return;
 
-        //Get GCD of 2 smallest member weights
+        //Get GCD of 2 smallest member weights with weight size > 1
         List<Poolable<T>> sorted = new List<Poolable<T>>(pList);
         sorted.Sort((p1, p2) => p1.weight.CompareTo(p2.weight));
+        while(sorted.Count > 0 && sorted[0].weight == 1) {
+            sorted.RemoveAt(0);
+        }
+        if (sorted.Count < 2)
+            return;
+
         int gcd = EuclidGCDByMod(sorted[0].weight, sorted[1].weight);
 
         if(gcd > 1) {
-            //if all member weights divisible by GCD, can optimize size by doing so and re-creating pool
+            //if all member weights divisible by a GCD > 1, can optimize size by doing so and re-creating pool
             for(int n = 2; n < pList.Count; n++) { 
                 if(pList[n].weight % gcd != 0) {
                     return;
