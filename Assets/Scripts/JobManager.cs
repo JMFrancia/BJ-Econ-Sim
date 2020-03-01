@@ -19,6 +19,12 @@ public class JobManager : MonoBehaviour
         }
     }
 
+    public FrameManager HoneyFrameManager { 
+        get {
+            return honeyFrameManager;
+        }
+    }
+
     public CellManager ForagingCellManager { 
         get { 
             return foragingCellManager; 
@@ -41,12 +47,20 @@ public class JobManager : MonoBehaviour
         }
     }
 
+    public CellManager HoneyCellManager { 
+        get {
+            return honeyCellManager;
+        }
+    }
+
     [SerializeField] FrameManager foragingFrameManager;
     [SerializeField] FrameManager nursingFrameManager;
+    [SerializeField] FrameManager honeyFrameManager;
 
     [SerializeField] CellManager foragingCellManager;
     [SerializeField] CellManager nursingCellManager;
     [SerializeField] CellManager bakeryCellManager;
+    [SerializeField] CellManager honeyCellManager;
 
     private void Awake()
     {

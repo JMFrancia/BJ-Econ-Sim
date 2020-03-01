@@ -55,7 +55,6 @@ public class NurseryManager : MonoBehaviour
     private void Start()
     {
         ScheduleQueenLayEgg();
-        Debug.Log("Queen is active!");
     }
 
     void AddNurse() {
@@ -84,7 +83,6 @@ public class NurseryManager : MonoBehaviour
     }
 
     void ScheduleQueenLayEgg(Nurse nurse = null) {
-        Debug.Log("Problem?");
         int nextEggEst = ControlManager.instance.Times.EggLayTime + StepController.StepNumber;
 
         string startingMessage = "";
