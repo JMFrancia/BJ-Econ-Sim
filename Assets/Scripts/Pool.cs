@@ -10,6 +10,10 @@ using UnityEngine;
  * based on its weight (out of sum of all weights).
  */
 
+
+//TO-DO: test thoroughly, esp. optimization
+//Edge-case: Adding pool items after pool has been optimized may through off
+//originally intended balance
 public class Pool<T> : MonoBehaviour
 {
     [Serializable]
@@ -53,7 +57,7 @@ public class Pool<T> : MonoBehaviour
         Add(p.item, p.weight, false);
     }
 
-    void Add(T item, int weight, bool newPoolable) {
+    void Add(T item, int weight, bool newPoolable, bool optimize) {
         Poolable<T> p = new Poolable<T>(item, weight);
 
         if (newPoolable) {
@@ -70,15 +74,18 @@ public class Pool<T> : MonoBehaviour
 
         poolableIdCounter++;
         pool.AddRange(newItem);
+        if (optimize)
+            TryOptimizeSize();
     }
 
     public void Add(T item, int weight) {
-        Add(item, weight, true);
+        Add(item, weight, true, OptimizeSize);
     }
 
     public void Add(Dictionary<T, int> items) { 
         foreach(T key in items.Keys) {
-            Add(key, items[key]);
+            //Don't try to optimize size until all items added
+            Add(key, items[key], true, false);
         }
         if(OptimizeSize)
             TryOptimizeSize();
