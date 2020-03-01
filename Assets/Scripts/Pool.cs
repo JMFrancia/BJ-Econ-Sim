@@ -114,6 +114,7 @@ public class Pool<T> : MonoBehaviour
         pool.RemoveRange(start, weight);
         pList.Remove(poolableDict[pId]);
         poolableDict.Remove(pId);
+        TryOptimizeSize();
     }
 
     /* 
