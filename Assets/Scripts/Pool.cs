@@ -128,7 +128,7 @@ public class Pool<T> : MonoBehaviour
         //Get GCD of 2 smallest member weights with weight size > 1
         List<Poolable<T>> sorted = new List<Poolable<T>>(pList);
         sorted.Sort((p1, p2) => p1.weight.CompareTo(p2.weight));
-        while(sorted.Count > 0 && sorted[0].weight == 1) {
+        while(sorted.Count > 1 && sorted[0].weight == 1) {
             sorted.RemoveAt(0);
         }
         if (sorted.Count < 2)
