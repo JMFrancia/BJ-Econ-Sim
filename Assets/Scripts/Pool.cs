@@ -54,7 +54,7 @@ public class Pool<T> : MonoBehaviour
     }
 
     void Add(Poolable<T> p) {
-        Add(p.item, p.weight, false);
+        Add(p.item, p.weight, false, false);
     }
 
     void Add(T item, int weight, bool newPoolable, bool optimize) {

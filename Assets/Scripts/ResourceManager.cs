@@ -118,19 +118,19 @@ public class ResourceManager : MonoBehaviour
     {
         instance = this;
 
+        ControlManager.StartingControls init = ControlManager.instance.StartingValues;
+
+        honeyManager.Initialize(init.Honey);
+        nectarManager.Initialize(init.Nectar);
+        _pollen = init.Pollen;
+        _bread = init.Bread;
+        _bucks = init.Bucks;
+        _workers = init.Workers;
+
         workersText.text = _workers.ToString();
         pollenText.text = _pollen.ToString();
         breadText.text = _bread.ToString();
         bucksText.text = _bucks.ToString();
-    }
-
-    public void Initialize(int workers, int bucks, int pollen, int bread, Dictionary<FlowerType, int> nectar, Dictionary<FlowerType, int> honey)
-    {
-        _pollen = pollen;
-        _workers = workers;
-        _bread = bread;
-        nectarManager.Initialize(nectar);
-        honeyManager.Initialize(honey);
     }
 
     public bool RemoveWorker()

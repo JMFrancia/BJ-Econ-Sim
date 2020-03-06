@@ -5,7 +5,7 @@ using System.Linq;
 
 public class NectarHoneyManager : MonoBehaviour
 {
-    static Dictionary<FlowerType, int> honeyDict = new Dictionary<FlowerType, int>(){
+    Dictionary<FlowerType, int> resDict = new Dictionary<FlowerType, int>(){
         {FlowerType.Common, 0},
         {FlowerType.Seasonal, 0},
         {FlowerType.Rare, 0},
@@ -24,19 +24,19 @@ public class NectarHoneyManager : MonoBehaviour
     }
 
     public void Initialize(Dictionary<FlowerType, int> dict) {
-        honeyDict = dict;
+        resDict = dict;
         UpdateDisplay();
     }
 
     public int Add(FlowerType type, int amt) {
-        honeyDict[type] += amt;
+        resDict[type] += amt;
         UpdateDisplay(type);
-        return honeyDict[type];
+        return resDict[type];
     }
 
     public bool Remove(FlowerType type, int amt) {
-        if (honeyDict[type] >= amt) {
-            honeyDict[type] -= amt;
+        if (resDict[type] >= amt) {
+            resDict[type] -= amt;
             UpdateDisplay(type);
             return true;
         }
@@ -44,35 +44,35 @@ public class NectarHoneyManager : MonoBehaviour
     }
 
     public int Amount(FlowerType type) {
-        return honeyDict[type];
+        return resDict[type];
     }
 
     public int Total() {
-        return honeyDict.Values.Sum();
+        return resDict.Values.Sum();
     }
 
     private void UpdateDisplay()
     {
-        commonText.text = honeyDict[FlowerType.Common].ToString();
-        seasonalText.text = honeyDict[FlowerType.Seasonal].ToString();
-        rareText.text = honeyDict[FlowerType.Rare].ToString();
-        uniqueText.text = honeyDict[FlowerType.Unique].ToString();
+        commonText.text = resDict[FlowerType.Common].ToString();
+        seasonalText.text = resDict[FlowerType.Seasonal].ToString();
+        rareText.text = resDict[FlowerType.Rare].ToString();
+        uniqueText.text = resDict[FlowerType.Unique].ToString();
         UpdateTotalDisplay();
     }
 
     void UpdateDisplay(FlowerType type) {
         switch(type) {
             case FlowerType.Common:
-                commonText.text = honeyDict[FlowerType.Common].ToString();
+                commonText.text = resDict[FlowerType.Common].ToString();
                 break;
             case FlowerType.Seasonal:
-                seasonalText.text = honeyDict[FlowerType.Seasonal].ToString();
+                seasonalText.text = resDict[FlowerType.Seasonal].ToString();
                 break;
             case FlowerType.Rare:
-                rareText.text = honeyDict[FlowerType.Rare].ToString();
+                rareText.text = resDict[FlowerType.Rare].ToString();
                 break;
             case FlowerType.Unique:
-                uniqueText.text = honeyDict[FlowerType.Unique].ToString();
+                uniqueText.text = resDict[FlowerType.Unique].ToString();
                 break;
         }
         UpdateTotalDisplay();

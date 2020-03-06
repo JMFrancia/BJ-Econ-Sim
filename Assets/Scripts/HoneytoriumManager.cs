@@ -64,9 +64,6 @@ public class HoneytoriumManager : MonoBehaviour
         honeyMakers.Remove(maker);
     }
 
-    //Some edge case happening here that's either preventing
-    //Honey from being made after a certain point, or just not reflecting it correctly
-    //Update ControlManager.StartingControls to simplify testing
     void MakeHoney(HoneyMaker maker) {
         if(!maker.waitingOnNectar) {
             //Assume just finished making honey
