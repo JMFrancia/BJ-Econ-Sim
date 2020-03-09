@@ -72,7 +72,7 @@ public class RecordManager : MonoBehaviour
         Record record = new Record(
             step: step,
             workers: ResourceManager.Workers,
-            nectar: ResourceManager.Nectar,
+            nectar: ResourceManager.TotalNectar,
             pollen: ResourceManager.Pollen,
             bread: ResourceManager.Bread,
             foragers: JobManager.instance.ForagingCellManager.ActiveCells,

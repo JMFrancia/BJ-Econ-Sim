@@ -14,78 +14,30 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    public static int Nectar {
+    public static int TotalNectar {
         get {
             return instance.nectarManager.Total();
         }
     }
 
-    public static int Workers { 
+    public static int Nectar(FlowerType type) {
+        return instance.nectarManager.Amount(type);
+    }
+
+    public static int Workers {
         get {
             return _workers;
         }
     }
 
-    public static int Bread { 
+    public static int Bread {
         get {
             return _bread;
         }
     }
 
-    public static int CommonNectar { 
-        get {
-            return instance.nectarManager.Amount(FlowerType.Common);
-        }
-    }
-
-    public static int SeasonalNectar {
-        get {
-            return instance.nectarManager.Amount(FlowerType.Seasonal);
-        }
-    }
-
-    public static int RareNectar {
-        get
-        {
-            return instance.nectarManager.Amount(FlowerType.Rare);
-        }
-    }
-
-    public static int UniqueNectar {
-        get
-        {
-            return instance.nectarManager.Amount(FlowerType.Unique);
-        }
-    }
-
-    public static int CommonHoney { 
-        get {
-            return instance.honeyManager.Amount(FlowerType.Common);
-        }
-    }
-
-    public static int SeasonalHoney
-    {
-        get
-        {
-            return instance.honeyManager.Amount(FlowerType.Seasonal);
-        }
-    }
-
-    public static int RareHoney
-    {
-        get
-        {
-            return instance.honeyManager.Amount(FlowerType.Rare);
-        }
-    }
-
-    public static int UniqueHoney
-    {
-        get
-        {
-            return instance.honeyManager.Amount(FlowerType.Unique);
-        }
+    public static int Honey(FlowerType type) {
+        return instance.honeyManager.Amount(type);
     }
 
     public static int TotalHoney
