@@ -24,7 +24,6 @@ public class NectarHoneyManager : MonoBehaviour
     }
 
     public void Initialize(Dictionary<FlowerType, int> dict) {
-        Debug.Log("Initializing manager with dict " + dict + " of size " + dict.Count);
         if(dict != null)
         {
             resDict = dict;
@@ -57,7 +56,6 @@ public class NectarHoneyManager : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        Debug.Log("Updating display on " + gameObject.name);
         commonText.text = resDict[FlowerType.Common].ToString();
         seasonalText.text = resDict[FlowerType.Seasonal].ToString();
         rareText.text = resDict[FlowerType.Rare].ToString();

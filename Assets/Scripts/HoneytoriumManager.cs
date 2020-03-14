@@ -32,8 +32,7 @@ public class HoneytoriumManager : MonoBehaviour
     [SerializeField] Text rareOrderText;
     [SerializeField] Text uniqueOrderText;
     [SerializeField] Text totalOrdersText;
-
-    bool autoOrder = true;
+    [SerializeField] Toggle autoOrderToggle;
 
     List<HoneyMaker> honeyMakers = new List<HoneyMaker>();
     Dictionary<FlowerType, int> orders = new Dictionary<FlowerType, int>() {
@@ -61,7 +60,17 @@ public class HoneytoriumManager : MonoBehaviour
         AddButtonCallback(ref addRareOrderButton, () => AddHoneyOrder(FlowerType.Rare));
         AddButtonCallback(ref addUniqueOrderButton, () => AddHoneyOrder(FlowerType.Unique));
 
+        autoOrderToggle.onValueChanged.AddListener(OnAutoToggle);
+        OnAutoToggle(true);
+
         UpdateOrdersDisplay();
+    }
+
+    void OnAutoToggle(bool val) {
+        addCommonOrderButton.interactable = autoOrderToggle.isOn;
+        addSeasonalOrderButton.interactable = autoOrderToggle.isOn;
+        addRareOrderButton.interactable = autoOrderToggle.isOn;
+        addUniqueOrderButton.interactable = autoOrderToggle.isOn;
     }
 
     void UpdateOrdersDisplay() {
@@ -80,7 +89,7 @@ public class HoneytoriumManager : MonoBehaviour
     }
 
     void AddHoneyOrder(FlowerType type) {
-        if (autoOrder)
+        if (autoOrderToggle.isOn)
             return;
         //Require that orders don't exceed nectar cost
         if (ResourceManager.Nectar(type) >= ((orders[type] + 1) * ControlManager.instance.Quantities.NectarPerHoney)) {
@@ -124,11 +133,11 @@ public class HoneytoriumManager : MonoBehaviour
 
         for (int n = types.Length - 1; n >= 0; n--)
         {
-            if (autoOrder || orders[types[n]] > 0)
+            if (autoOrderToggle.isOn || orders[types[n]] > 0)
             {
                 if (ResourceManager.instance.RemoveNectar(types[n], ControlManager.instance.Quantities.NectarPerHoney))
                 {
-                    if (!autoOrder)
+                    if (!autoOrderToggle.isOn)
                     {
                         orders[types[n]] = Math.Max(0, orders[types[n]] - 1);
                         UpdateOrdersDisplay();
