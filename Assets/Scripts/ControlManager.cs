@@ -16,12 +16,14 @@ public class ControlManager : MonoBehaviour
     public RouteControls Routes { get { return _routes; } }
     public StartingControls StartingValues { get { return _start; } }
     public MapControls MapData { get { return _flowers; } }
+    public PriceControls Prices { get { return _prices; } }
 
     [SerializeField] TimeControls _times;
     [SerializeField] QuantityControls _quantities;
     [SerializeField] RouteControls _routes;
     [SerializeField] StartingControls _start;
     [SerializeField] MapControls _flowers;
+    [SerializeField] PriceControls _prices;
 
     private void Awake()
     {
@@ -38,10 +40,6 @@ public class ControlManager : MonoBehaviour
     [Serializable]
     public class StartingControls
     {
-
-        [Serializable]
-        public class NectarHoneyDict : UnitySerializedDictionary<FlowerType, int> { }
-
         public int Step = 0;
         public int Bread = 0;
         public int Bucks = 0;
@@ -87,6 +85,24 @@ public class ControlManager : MonoBehaviour
         public int BreadPerBee = 1;
         public int NectarPerHoney = 3;
         public int HoneyPerMake = 1;
+    }
+
+    [Serializable]
+    public class PriceControls
+    {
+        public NectarHoneyDict HoneyValues = new NectarHoneyDict() {
+            {FlowerType.Common, 5},
+            {FlowerType.Seasonal, 10},
+            {FlowerType.Rare, 15},
+            {FlowerType.Unique, 20}
+        };
+
+        public NectarHoneyDict BundleGenPoolWeights = new NectarHoneyDict() {
+            {FlowerType.Common, 20},
+            {FlowerType.Seasonal, 10},
+            {FlowerType.Rare, 6},
+            {FlowerType.Unique, 4}
+        };
     }
 
     [Serializable]
@@ -226,4 +242,11 @@ public abstract class UnitySerializedDictionary<TKey, TValue> : Dictionary<TKey,
             this.valueData.Add(item.Value);
         }
     }
+
+    public Dictionary<TKey, TValue> ToDictionary() {
+        return (Dictionary<TKey, TValue>)this;
+    }
 }
+
+[Serializable]
+public class NectarHoneyDict : UnitySerializedDictionary<FlowerType, int> { }

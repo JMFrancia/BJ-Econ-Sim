@@ -34,6 +34,7 @@ public class NectarHoneyManager : MonoBehaviour
     public int Add(FlowerType type, int amt) {
         resDict[type] += amt;
         UpdateDisplay(type);
+        EventManager.TriggerEvent(EventNames.HONEY_CHANGED);
         return resDict[type];
     }
 
@@ -41,6 +42,7 @@ public class NectarHoneyManager : MonoBehaviour
         if (resDict[type] >= amt) {
             resDict[type] -= amt;
             UpdateDisplay(type);
+            EventManager.TriggerEvent(EventNames.HONEY_CHANGED);
             return true;
         }
         return false;

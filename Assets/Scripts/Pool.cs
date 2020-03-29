@@ -48,6 +48,15 @@ public class Pool<T> : MonoBehaviour
         }
     }
 
+    public Pool<T> Copy()
+    {
+        Pool<T> result = new Pool<T>();
+        pList.ForEach(p => {
+            result.Add(p.item, p.weight);
+        });
+        return result;
+    }
+
     private void Awake()
     {
         pList.ForEach(Add);
